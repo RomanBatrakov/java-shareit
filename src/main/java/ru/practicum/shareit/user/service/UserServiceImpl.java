@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exeption.NotFoundException;
 import ru.practicum.shareit.exeption.ValidationException;
+import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dao.UserRepository;
 
@@ -13,8 +14,8 @@ import java.util.NoSuchElementException;
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
-
     private final UserRepository userRepository;
+    private final ItemRepository itemRepository;
 
     @Override
     public User getUserById(int id) {
@@ -56,6 +57,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(int id) {
         try {
             userRepository.deleteUser(id);
+            itemRepository.deleteOwnerItems(id);
         } catch (NoSuchElementException e) {
             throw new NotFoundException("Пользователь не найден");
         }
