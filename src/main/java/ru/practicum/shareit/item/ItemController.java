@@ -14,36 +14,37 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ItemController {
     private final ItemService service;
+    private final ItemMapper itemMapper;
 
     @GetMapping("/{itemId}")
     public ItemDto getItemById(@PathVariable int itemId) {
-        return ItemMapper.toItemDto(service.getItemById(itemId));
+        return itemMapper.toItemDto(service.getItemById(itemId));
     }
 
     @GetMapping
     public List<ItemDto> getAllOwnerItems(@RequestHeader("X-Sharer-User-Id") int userId) {
         return service.getAllOwnerItems(userId).stream()
-                .map(ItemMapper::toItemDto)
+                .map(itemMapper::toItemDto)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/search")
     public List<ItemDto> search(@RequestParam String text) {
         return service.search(text).stream()
-                .map(ItemMapper::toItemDto)
+                .map(itemMapper::toItemDto)
                 .collect(Collectors.toList());
     }
 
     @PostMapping
     public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") int userId,
                               @Valid @RequestBody ItemDto itemDto) {
-        return ItemMapper.toItemDto(service.createItem(userId, ItemMapper.toItem(itemDto)));
+        return itemMapper.toItemDto(service.createItem(userId, itemMapper.toItem(itemDto)));
     }
 
     @PatchMapping("/{itemId}")
     public ItemDto updateItem(@PathVariable int itemId,
                               @RequestHeader("X-Sharer-User-Id") int userId,
                               @RequestBody ItemDto itemDto) {
-        return ItemMapper.toItemDto(service.updateItem(itemId, userId, ItemMapper.toItem(itemDto)));
+        return itemMapper.toItemDto(service.updateItem(itemId, userId, itemMapper.toItem(itemDto)));
     }
 }

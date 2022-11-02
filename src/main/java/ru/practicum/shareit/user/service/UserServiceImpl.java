@@ -10,6 +10,7 @@ import ru.practicum.shareit.user.dao.UserRepository;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -18,9 +19,9 @@ public class UserServiceImpl implements UserService {
     private final ItemRepository itemRepository;
 
     @Override
-    public User getUserById(int id) {
+    public Optional<User> getUserById(int id) {
         try {
-            return userRepository.getUserById(id);
+            return userRepository.findById(id);
         } catch (NoSuchElementException e) {
             throw new NotFoundException("Пользователь не найден");
         }
@@ -28,13 +29,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAllUsers() {
-        return userRepository.getAllUsers();
+        return userRepository.findAll();
     }
 
     @Override
     public User createUser(User user) {
         if (userValidation(user)) {
-            return userRepository.createUser(user);
+            return userRepository.save(user);
         } else {
             throw new ValidationException("Ошибка входящих данных");
         }
@@ -44,7 +45,7 @@ public class UserServiceImpl implements UserService {
     public User updateUser(int id, User user) {
         try {
             if (userValidation(user)) {
-                return userRepository.updateUser(id, user);
+                return userRepository.save(id, user);
             } else {
                 throw new ValidationException("Ошибка входящих данных");
             }
@@ -56,7 +57,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(int id) {
         try {
-            userRepository.deleteUser(id);
+            userRepository.deleteById(id);
             itemRepository.deleteOwnerItems(id);
         } catch (NoSuchElementException e) {
             throw new NotFoundException("Пользователь не найден");

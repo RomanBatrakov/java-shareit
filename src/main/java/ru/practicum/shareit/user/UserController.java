@@ -15,28 +15,29 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private final UserService service;
+    private final UserMapper userMapper;
 
     @GetMapping("/{id}")
     public UserDto getUserById(@PathVariable int id) {
-        return UserMapper.toUserDto(service.getUserById(id));
+        return userMapper.toUserDto(service.getUserById(id));
     }
 
     @GetMapping
     public List<UserDto> getAllUsers() {
         return service.getAllUsers().stream()
-                .map(UserMapper::toUserDto)
+                .map(userMapper::toUserDto)
                 .collect(Collectors.toList());
     }
 
     @PostMapping
     public UserDto createUser(@Valid @RequestBody UserDto userDto) {
-        return UserMapper.toUserDto(service.createUser(UserMapper.toUser(userDto)));
+        return userMapper.toUserDto(service.createUser(userMapper.toUser(userDto)));
     }
 
     @PatchMapping("/{id}")
     public UserDto updateUser(@PathVariable int id,
                               @RequestBody UserDto userDto) {
-        return UserMapper.toUserDto(service.updateUser(id, UserMapper.toUser(userDto)));
+        return userMapper.toUserDto(service.updateUser(id, userMapper.toUser(userDto)));
     }
 
     @DeleteMapping("/{id}")
