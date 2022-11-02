@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exeption.NotFoundException;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.dao.ItemRepository;
@@ -9,17 +8,18 @@ import ru.practicum.shareit.user.dao.UserRepository;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
-@Service
+
 @AllArgsConstructor
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
 
     @Override
-    public Item getItemById(int itemId) {
+    public Optional<Item> getItemById(int itemId) {
         try {
-            return itemRepository.getItemById(itemId);
+            return itemRepository.findById(itemId);
         } catch (NoSuchElementException e) {
             throw new NotFoundException("Вещь не найдена");
         }
@@ -42,7 +42,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Item createItem(int userId, Item item) {
         if (itemValidation(0, userId, item)) {
-            return itemRepository.createItem(userRepository.getUserById(userId), item);
+            return itemRepository.createItem(userRepository.findById(userId).get(), item);
         } else {
             throw new NotFoundException("Ошибка входящих данных");
         }
@@ -52,7 +52,7 @@ public class ItemServiceImpl implements ItemService {
     public Item updateItem(int itemId, int userId, Item item) {
         try {
             if (itemValidation(itemId, userId, item)) {
-                return itemRepository.updateItem(itemId, item, userRepository.getUserById(userId));
+                return itemRepository.updateItem(itemId, item, userRepository.findById(userId).get());
             } else {
                 throw new NotFoundException("Ошибка входящих данных");
             }
@@ -64,11 +64,11 @@ public class ItemServiceImpl implements ItemService {
     private boolean itemValidation(int itemId, int userId, Item item) {
         boolean ownerValid = false;
         if (itemId > 0) {
-            ownerValid = itemRepository.getItemById(itemId).getOwner().getId() == userId;
+            ownerValid = itemRepository.findById(itemId).get().getOwner().getId() == userId;
         } else if (item.getOwner() == null && item.getId() == 0) {
             ownerValid = true;
         }
-        boolean userValid = userRepository.getAllUsers().stream()
+        boolean userValid = userRepository.findAll().stream()
                 .anyMatch(x -> x.getId() == userId);
         return ownerValid && userValid;
     }

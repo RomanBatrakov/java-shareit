@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item.dao;
 
 import lombok.Data;
-import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.user.User;
 
@@ -10,18 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
-@Component
 public class ItemRepositoryImpl implements ItemRepository {
-    private int lastId = 0;
-    private final List<Item> items = new ArrayList<>();
-
-    @Override
-    public Item getItemById(int itemId) {
-        return items.stream()
-                .filter(x -> x.getId() == itemId)
-                .findFirst()
-                .get();
-    }
 
     @Override
     public List<Item> getAllOwnerItems(int userId) {
@@ -54,21 +42,21 @@ public class ItemRepositoryImpl implements ItemRepository {
     @Override
     public Item updateItem(int itemId, Item item, User user) {
         if (item.getName() != null) {
-            getItemById(itemId).setName(item.getName());
+            findById(itemId).get().setName(item.getName());
         } else {
-            item.setName(getItemById(itemId).getName());
+            item.setName(findById(itemId).get().getName());
         }
         if (item.getDescription() != null) {
-            getItemById(itemId).setDescription(item.getDescription());
+            findById(itemId).get().setDescription(item.getDescription());
         } else {
-            item.setDescription(getItemById(itemId).getDescription());
+            item.setDescription(findById(itemId).get().getDescription());
         }
         if (item.getAvailable() != null) {
-            getItemById(itemId).setAvailable(item.getAvailable());
+            findById(itemId).get().setAvailable(item.getAvailable());
         } else {
-            item.setAvailable(getItemById(itemId).getAvailable());
+            item.setAvailable(findById(itemId).get().getAvailable());
         }
-        item.setRequest(getItemById(itemId).getRequest());
+        item.setRequest(findById(itemId).get().getRequest());
         item.setOwner(user);
         item.setId(itemId);
         return item;
@@ -79,7 +67,4 @@ public class ItemRepositoryImpl implements ItemRepository {
         items.removeIf(item -> item.getOwner().getId() == userId);
     }
 
-    private int getId() {
-        return ++lastId;
-    }
 }
