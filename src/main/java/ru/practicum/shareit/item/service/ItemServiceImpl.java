@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exeption.NotFoundException;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.dao.ItemRepository;
-import ru.practicum.shareit.user.dao.UserRepository;
+import ru.practicum.shareit.user.service.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,11 +15,11 @@ import java.util.stream.Collectors;
 @Service
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public ItemServiceImpl(ItemRepository itemRepository, UserRepository userRepository) {
+    public ItemServiceImpl(ItemRepository itemRepository, UserService userService) {
         this.itemRepository = itemRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -61,7 +61,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Item createItem(int userId, Item item) {
         if (item.getOwner() == null && item.getId() == 0) {
-            item.setOwner(userRepository.findById(userId).get());
+            item.setOwner(userService.getUserById(userId).get());
             return itemRepository.save(item);
         } else {
             throw new NotFoundException("Ошибка входящих данных");
@@ -82,7 +82,7 @@ public class ItemServiceImpl implements ItemService {
                 if (item.getAvailable() != null) {
                     itemFromDb.setAvailable(item.getAvailable());
                 }
-                itemFromDb.setOwner(userRepository.findById(userId).get());
+                itemFromDb.setOwner(userService.getUserById(userId).get());
                 return itemRepository.save(itemFromDb);
             } else {
                 throw new NotFoundException("Ошибка входящих данных");
