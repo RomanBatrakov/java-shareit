@@ -1,8 +1,6 @@
 package ru.practicum.shareit.user.service;
 
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exeption.NotFoundException;
 import ru.practicum.shareit.exeption.ValidationException;
 import ru.practicum.shareit.user.User;
@@ -12,12 +10,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     @Override
-    @Transactional(readOnly = true)
     public Optional<User> getUserById(int id) {
         try {
             return userRepository.findById(id);
@@ -27,13 +27,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
     @Override
-    @Transactional
     public User createUser(User user) {
         try {
             return userRepository.save(user);
@@ -43,17 +41,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public User updateUser(int id, User user) {
         try {
-            return userRepository.updateUser(id, user);
+                User userFromDb = userRepository.findById(id).get();
+                if (user.getName() != null) {
+                    userFromDb.setName(user.getName());
+                }
+                if (user.getEmail() != null) {
+                    userFromDb.setEmail(user.getEmail());
+                }
+                return userRepository.save(userFromDb);
         } catch (NotFoundException e) {
             throw new NotFoundException("Пользователь не найден");
         }
     }
 
     @Override
-    @Transactional
     public void deleteUser(int id) {
         try {
             userRepository.deleteById(id);

@@ -1,25 +1,28 @@
 package ru.practicum.shareit.item.service;
 
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exeption.NotFoundException;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.user.dao.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
 
+    public ItemServiceImpl(ItemRepository itemRepository, UserRepository userRepository) {
+        this.itemRepository = itemRepository;
+        this.userRepository = userRepository;
+    }
+
     @Override
-    @Transactional(readOnly = true)
     public Optional<Item> getItemById(int itemId) {
         try {
             return itemRepository.findById(itemId);
@@ -29,38 +32,58 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Item> getAllOwnerItems(int userId) {
         try {
-            return itemRepository.findByOwner(userId);
+//            return itemRepository.findAllByOwner_Id(userId);
+                    return itemRepository.findAll().stream()
+                .filter(x -> x.getOwner().getId() == userId)
+                .collect(Collectors.toList());
         } catch (NoSuchElementException e) {
             throw new NotFoundException("Вещи не найдены");
         }
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Item> search(String text) {
-        return itemRepository.findByNameOrDescriptionContainingIgnoreCase(text);
+        if (text.isEmpty()) {
+            return new ArrayList<>();
+        } else {
+//            return itemRepository.findByNameOrDescriptionContainingIgnoreCase(text);
+
+            return itemRepository.findAll().stream()
+                    .filter(x -> x.getName().toLowerCase().contains(text.toLowerCase())
+                            || x.getDescription().toLowerCase().contains(text.toLowerCase()))
+                    .filter(Item::getAvailable)
+                    .collect(Collectors.toList());
+        }
     }
 
     @Override
-    @Transactional
     public Item createItem(int userId, Item item) {
         if (item.getOwner() == null && item.getId() == 0) {
-            return itemRepository.createItem(userRepository.findById(userId).get(), item);
+            item.setOwner(userRepository.findById(userId).get());
+            return itemRepository.save(item);
         } else {
             throw new NotFoundException("Ошибка входящих данных");
         }
     }
 
     @Override
-    @Transactional
     public Item updateItem(int itemId, int userId, Item item) {
         try {
             Item itemFromDb = getItemById(itemId).get();
             if (itemFromDb.getOwner().getId() == userId) {
-                return itemRepository.updateItem(itemFromDb, item, userRepository.findById(userId).get());
+                if (item.getName() != null) {
+                    itemFromDb.setName(item.getName());
+                }
+                if (item.getDescription() != null) {
+                    itemFromDb.setDescription(item.getDescription());
+                }
+                if (item.getAvailable() != null) {
+                    itemFromDb.setAvailable(item.getAvailable());
+                }
+                itemFromDb.setOwner(userRepository.findById(userId).get());
+                return itemRepository.save(itemFromDb);
             } else {
                 throw new NotFoundException("Ошибка входящих данных");
             }
