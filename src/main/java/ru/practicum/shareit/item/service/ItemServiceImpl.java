@@ -34,10 +34,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<Item> getAllOwnerItems(int userId) {
         try {
-//            return itemRepository.findAllByOwner_Id(userId);
-                    return itemRepository.findAll().stream()
-                .filter(x -> x.getOwner().getId() == userId)
-                .collect(Collectors.toList());
+            return itemRepository.findByOwner_Id(userId);
         } catch (NoSuchElementException e) {
             throw new NotFoundException("Вещи не найдены");
         }
