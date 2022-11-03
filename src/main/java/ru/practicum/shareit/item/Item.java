@@ -17,7 +17,7 @@ import javax.persistence.*;
 @Table(name = "items")
 public class Item {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
     private String description;
@@ -25,7 +25,7 @@ public class Item {
     @ManyToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private User owner;
-    @OneToOne
-    @JoinColumn(name = "request_id", referencedColumnName = "id")
-    private ItemRequest request;
+//    @OneToOne
+//    @JoinColumn(name = "request_id", referencedColumnName = "id")
+//    private ItemRequest request;
 }

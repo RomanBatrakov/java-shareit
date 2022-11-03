@@ -7,10 +7,11 @@ import org.springframework.web.client.HttpServerErrorException;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 @ControllerAdvice
 public class ErrorHandler {
-    @ExceptionHandler({NotFoundException.class})
+    @ExceptionHandler({NotFoundException.class, NoSuchElementException.class})
     public void handlerNotFound(HttpServletResponse response) throws IOException {
         response.sendError(HttpStatus.NOT_FOUND.value());
     }
