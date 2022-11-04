@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class ItemServiceImpl implements ItemService {
@@ -45,13 +44,7 @@ public class ItemServiceImpl implements ItemService {
         if (text.isEmpty()) {
             return new ArrayList<>();
         } else {
-//            return itemRepository.findByNameOrDescriptionContainingIgnoreCase(text);
-
-            return itemRepository.findAll().stream()
-                    .filter(x -> x.getName().toLowerCase().contains(text.toLowerCase())
-                            || x.getDescription().toLowerCase().contains(text.toLowerCase()))
-                    .filter(Item::getAvailable)
-                    .collect(Collectors.toList());
+            return itemRepository.findByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(text, text);
         }
     }
 
