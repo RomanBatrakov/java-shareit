@@ -6,7 +6,6 @@ import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dao.BookingRepository;
 import ru.practicum.shareit.booking.dto.BookingToUserDto;
-import ru.practicum.shareit.exeption.NotFoundException;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.User;
@@ -23,7 +22,7 @@ public class BookingServiceImpl implements BookingService {
     public Booking createBooking(int userId, BookingToUserDto bookingToUserDto) {
         User user = userService.getUserById(userId).get();
         Item item = itemService.getItemById(bookingToUserDto.getItemId()).get();
-        if (bookingToUserDto.getStart().isBefore(bookingToUserDto.getEnd())) {
+        if (bookingToUserDto.getStart().isBefore(bookingToUserDto.getEnd()) && item.getAvailable()) {
             Booking booking = Booking.builder()
                     .start(bookingToUserDto.getStart())
                     .end(bookingToUserDto.getEnd())
@@ -33,7 +32,7 @@ public class BookingServiceImpl implements BookingService {
                     .build();
             return bookingRepository.save(booking);
         } else {
-            throw new NotFoundException("Ошибка входящих данных");
+            throw new IllegalArgumentException("Ошибка входящих данных");
         }
     }
 }
