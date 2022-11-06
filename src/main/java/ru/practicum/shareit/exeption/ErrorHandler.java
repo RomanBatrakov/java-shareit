@@ -1,15 +1,16 @@
 package ru.practicum.shareit.exeption;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpServerErrorException;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class ErrorHandler {
     @ExceptionHandler({NotFoundException.class, NoSuchElementException.class})
     public void handlerNotFound(HttpServletResponse response) throws IOException {
@@ -22,8 +23,10 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public void handlerBadRequest(HttpServletResponse response) throws IOException {
-        response.sendError(HttpStatus.BAD_REQUEST.value());
+    public ResponseEntity<ErrorMessage> handlerBadRequest(IllegalArgumentException exception) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorMessage(exception.getMessage()));
     }
 
     @ExceptionHandler(HttpServerErrorException.class)

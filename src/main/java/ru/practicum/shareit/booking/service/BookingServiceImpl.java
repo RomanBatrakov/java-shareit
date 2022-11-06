@@ -53,7 +53,7 @@ public class BookingServiceImpl implements BookingService {
         if (userId == booking.getItem().getOwner().getId()) {
             BookingStatus status = (approved) ? APPROVED : REJECTED;
             booking.setStatus(status);
-            return booking;
+            return bookingRepository.save(booking);
         } else {
             throw new ValidationException("Ошибка валидации запроса");
         }
@@ -61,6 +61,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Booking getBookingById(int userId, int bookingId) {
+        userService.getUserById(userId).get();
         try {
             Booking booking = bookingRepository.findById(bookingId).get();
             if (userId == booking.getBooker().getId() || userId == booking.getItem().getOwner().getId()) {
@@ -75,25 +76,39 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<Booking> getUserBookings(int userId, BookingState state) {
+        userService.getUserById(userId).get();
         try {
-            switch (state) {
-                case ALL:
-                    return bookingRepository.findByBooker_IdOrderByStartDesc(userId);
-                case CURRENT:
-                    return bookingRepository.findByBooker_IdAndEndAfterAndStartBeforeOrderByStartDesc(userId,
-                            LocalDateTime.now(), LocalDateTime.now());
-                case PAST:
-                    return bookingRepository.findByBooker_IdAndEndBeforeOrderByStartDesc(userId, LocalDateTime.now());
-                case FUTURE:
-                    return bookingRepository.findByBooker_IdAndStartAfterOrderByStartDesc(userId, LocalDateTime.now());
-                case WAITING:
-                    return bookingRepository.findByBooker_IdAndStatusOrderByStartDesc(userId, WAITING);
-                case REJECTED:
-                    return bookingRepository.findByBooker_IdAndStatusOrderByStartDesc(userId, REJECTED);
-                default:
-                    throw new ValidationException("Ошибка валидации запроса");
-            }
-        } catch (NoSuchElementException e) {
+            return switch (state) {
+                case ALL -> bookingRepository.findByBooker_IdOrderByStartDesc(userId);
+                case CURRENT -> bookingRepository.findByBooker_IdAndEndAfterAndStartBeforeOrderByStartDesc(userId,
+                        LocalDateTime.now(), LocalDateTime.now());
+                case PAST -> bookingRepository.findByBooker_IdAndEndBeforeOrderByStartDesc(userId, LocalDateTime.now());
+                case FUTURE ->
+                        bookingRepository.findByBooker_IdAndStartAfterOrderByStartDesc(userId, LocalDateTime.now());
+                case WAITING -> bookingRepository.findByBooker_IdAndStatusOrderByStartDesc(userId, WAITING);
+                case REJECTED -> bookingRepository.findByBooker_IdAndStatusOrderByStartDesc(userId, REJECTED);
+            };
+        } catch (NotFoundException e) {
+            throw new NotFoundException("Бронирования не найдены");
+        }
+    }
+
+    @Override
+    public List<Booking> getOwnerBookings(int ownerId, BookingState state) {
+        userService.getUserById(ownerId).get();
+        try {
+            return switch (state) {
+                case ALL -> bookingRepository.findByItem_OwnerIdOrderByStartDesc(ownerId);
+                case CURRENT -> bookingRepository.findByItem_OwnerIdAndEndAfterAndStartBeforeOrderByStartDesc(ownerId,
+                        LocalDateTime.now(), LocalDateTime.now());
+                case PAST -> bookingRepository.findByItem_OwnerIdAndEndBeforeOrderByStartDesc(ownerId,
+                        LocalDateTime.now());
+                case FUTURE ->
+                        bookingRepository.findByItem_OwnerIdAndStartAfterOrderByStartDesc(ownerId, LocalDateTime.now());
+                case WAITING -> bookingRepository.findByItem_OwnerIdAndStatusOrderByStartDesc(ownerId, WAITING);
+                case REJECTED -> bookingRepository.findByItem_OwnerIdAndStatusOrderByStartDesc(ownerId, REJECTED);
+            };
+        } catch (NotFoundException e) {
             throw new NotFoundException("Бронирования не найдены");
         }
     }
