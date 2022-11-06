@@ -23,16 +23,16 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class BookingDto {
     private int id;
-    @NotNull
-    @FutureOrPresent
+    @NotNull(message = "Date start is null")
+    @FutureOrPresent(message = "Date start is past")
     private LocalDateTime start;
-    @NotNull
-    @FutureOrPresent
+    @NotNull(message = "Date end is null")
+    @FutureOrPresent(message = "Date end is past")
 //    @DateTimeFormat(pattern="MM/dd/yyyy")
 //    @Mapping(target="startDt", source="dto.employeeStartDt",
 //            dateFormat="dd-MM-yyyy HH:mm:ss")
     private LocalDateTime end;
-    @NotNull
+    @NotNull(message = "Item is null")
     private Item item;
     private User booker;
     private BookingStatus status;

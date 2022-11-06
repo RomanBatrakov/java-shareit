@@ -15,13 +15,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ItemRequestDto {
     private int id;
-    @NotBlank
-    @NotNull
+    @NotBlank(message = "Description is mandatory")
+    @NotNull(message = "Description is null")
     private String description;
-    @NotNull
+    @NotNull(message = "Requestor is null")
     private User requestor;
-    @NotBlank
-    @NotNull
-    @PastOrPresent
+    @NotBlank(message = "CreatedTime is mandatory")
+    @NotNull(message = "CreatedTime is null")
+    @PastOrPresent(message = "CreatedTime is future")
     private LocalDateTime created;
 }
