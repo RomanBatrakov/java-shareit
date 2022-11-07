@@ -19,12 +19,9 @@ public class BookingToUserDto {
     private LocalDateTime start;
     @NotNull
     @FutureOrPresent
-//    @DateTimeFormat(pattern="MM/dd/yyyy")
-//    @Mapping(target="startDt", source="dto.employeeStartDt",
-//            dateFormat="dd-MM-yyyy HH:mm:ss")
     private LocalDateTime end;
     @NotNull
     private int itemId;
-    private User booker;
+    private int bookerId;
     private BookingStatus status;
 }

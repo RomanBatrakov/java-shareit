@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking.service;
 
-import lombok.AllArgsConstructor;
+import org.hibernate.validator.internal.util.stereotypes.Lazy;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingState;
@@ -13,25 +14,27 @@ import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.service.UserService;
 
-import javax.validation.ValidationException;
-
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static ru.practicum.shareit.booking.BookingStatus.*;
 
 @Service
-@AllArgsConstructor
 public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final UserService userService;
     private final ItemService itemService;
+    public BookingServiceImpl(BookingRepository bookingRepository, UserService userService, ItemService itemService) {
+        this.bookingRepository = bookingRepository;
+        this.userService = userService;
+        this.itemService = itemService;
+    }
 
     @Override
     public Booking createBooking(int userId, BookingToUserDto bookingToUserDto) {
         User user = userService.getUserById(userId).get();
         Item item = itemService.getItemById(bookingToUserDto.getItemId()).get();
+        if (item.getOwner().getId() == user.getId()) throw new NotFoundException("Владелец не может бронировать");
         if (bookingToUserDto.getStart().isBefore(bookingToUserDto.getEnd()) && item.getAvailable()) {
             Booking booking = Booking.builder()
                     .start(bookingToUserDto.getStart())
@@ -50,12 +53,13 @@ public class BookingServiceImpl implements BookingService {
     public Booking updateBooking(int bookingId, int userId, Boolean approved) {
         userService.getUserById(userId).get();
         Booking booking = getBookingById(userId, bookingId);
+        if (booking.getStatus().equals(APPROVED)) throw new IllegalArgumentException("Бронирование уже подтверждено");
         if (userId == booking.getItem().getOwner().getId()) {
             BookingStatus status = (approved) ? APPROVED : REJECTED;
             booking.setStatus(status);
             return bookingRepository.save(booking);
         } else {
-            throw new ValidationException("Ошибка валидации запроса");
+            throw new NotFoundException("Некорректный пользователь");
         }
     }
 
@@ -67,7 +71,7 @@ public class BookingServiceImpl implements BookingService {
             if (userId == booking.getBooker().getId() || userId == booking.getItem().getOwner().getId()) {
                 return booking;
             } else {
-                throw new ValidationException("Ошибка валидации запроса");
+                throw new NotFoundException("Ошибка валидации запроса");
             }
         } catch (NotFoundException e) {
             throw new NotFoundException("Бронирование не найдено");
@@ -111,5 +115,10 @@ public class BookingServiceImpl implements BookingService {
         } catch (NotFoundException e) {
             throw new NotFoundException("Бронирования не найдены");
         }
+    }
+
+    @Override
+    public List<Booking> getAllItemBookings(int itemId) {
+        return bookingRepository.findByItem_IdOrderByStartDesc(itemId);
     }
 }

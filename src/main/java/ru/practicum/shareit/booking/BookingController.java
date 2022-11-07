@@ -1,9 +1,7 @@
 package ru.practicum.shareit.booking;
 
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingToUserDto;
 import ru.practicum.shareit.booking.service.BookingService;
@@ -53,9 +51,14 @@ public class BookingController {
 
     @GetMapping("/owner")
     public List<BookingDto> getOwnerBookings(@RequestHeader("X-Sharer-User-Id") int ownerId,
-                                       @RequestParam(required = false, defaultValue = "ALL") BookingState state) {
-        return service.getOwnerBookings(ownerId, state).stream()
+                                       @RequestParam(required = false, defaultValue = "ALL") String state) {
+        try {
+            BookingState bookingState = BookingState.valueOf(state);
+        return service.getOwnerBookings(ownerId, bookingState).stream()
                 .map(bookingMapper::toBookingDto)
                 .collect(Collectors.toList());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Unknown state: " + state);
+        }
     }
 }

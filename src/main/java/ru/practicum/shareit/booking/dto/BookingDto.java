@@ -28,9 +28,6 @@ public class BookingDto {
     private LocalDateTime start;
     @NotNull(message = "Date end is null")
     @FutureOrPresent(message = "Date end is past")
-//    @DateTimeFormat(pattern="MM/dd/yyyy")
-//    @Mapping(target="startDt", source="dto.employeeStartDt",
-//            dateFormat="dd-MM-yyyy HH:mm:ss")
     private LocalDateTime end;
     @NotNull(message = "Item is null")
     private Item item;
