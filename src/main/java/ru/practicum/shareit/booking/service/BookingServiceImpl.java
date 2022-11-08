@@ -77,16 +77,23 @@ public class BookingServiceImpl implements BookingService {
     public List<Booking> getUserBookings(int userId, BookingState state) {
         userService.getUserById(userId).get();
         try {
-            return switch (state) {
-                case ALL -> bookingRepository.findByBooker_IdOrderByStartDesc(userId);
-                case CURRENT -> bookingRepository.findByBooker_IdAndEndAfterAndStartBeforeOrderByStartDesc(userId,
-                        LocalDateTime.now(), LocalDateTime.now());
-                case PAST -> bookingRepository.findByBooker_IdAndEndBeforeOrderByStartDesc(userId, LocalDateTime.now());
-                case FUTURE ->
-                        bookingRepository.findByBooker_IdAndStartAfterOrderByStartDesc(userId, LocalDateTime.now());
-                case WAITING -> bookingRepository.findByBooker_IdAndStatusOrderByStartDesc(userId, WAITING);
-                case REJECTED -> bookingRepository.findByBooker_IdAndStatusOrderByStartDesc(userId, REJECTED);
-            };
+            switch (state) {
+                case ALL:
+                    return bookingRepository.findByBooker_IdOrderByStartDesc(userId);
+                case CURRENT:
+                    return bookingRepository.findByBooker_IdAndEndAfterAndStartBeforeOrderByStartDesc(userId,
+                            LocalDateTime.now(), LocalDateTime.now());
+                case PAST:
+                    return bookingRepository.findByBooker_IdAndEndBeforeOrderByStartDesc(userId, LocalDateTime.now());
+                case FUTURE:
+                    return bookingRepository.findByBooker_IdAndStartAfterOrderByStartDesc(userId, LocalDateTime.now());
+                case WAITING:
+                    return bookingRepository.findByBooker_IdAndStatusOrderByStartDesc(userId, WAITING);
+                case REJECTED:
+                    return bookingRepository.findByBooker_IdAndStatusOrderByStartDesc(userId, REJECTED);
+                default:
+                    throw new IllegalArgumentException();
+            }
         } catch (NotFoundException e) {
             throw new NotFoundException("Бронирования не найдены");
         }
@@ -96,17 +103,25 @@ public class BookingServiceImpl implements BookingService {
     public List<Booking> getOwnerBookings(int ownerId, BookingState state) {
         userService.getUserById(ownerId).get();
         try {
-            return switch (state) {
-                case ALL -> bookingRepository.findByItem_OwnerIdOrderByStartDesc(ownerId);
-                case CURRENT -> bookingRepository.findByItem_OwnerIdAndEndAfterAndStartBeforeOrderByStartDesc(ownerId,
-                        LocalDateTime.now(), LocalDateTime.now());
-                case PAST -> bookingRepository.findByItem_OwnerIdAndEndBeforeOrderByStartDesc(ownerId,
-                        LocalDateTime.now());
-                case FUTURE ->
-                        bookingRepository.findByItem_OwnerIdAndStartAfterOrderByStartDesc(ownerId, LocalDateTime.now());
-                case WAITING -> bookingRepository.findByItem_OwnerIdAndStatusOrderByStartDesc(ownerId, WAITING);
-                case REJECTED -> bookingRepository.findByItem_OwnerIdAndStatusOrderByStartDesc(ownerId, REJECTED);
-            };
+            switch (state) {
+                case ALL:
+                    return bookingRepository.findByItem_OwnerIdOrderByStartDesc(ownerId);
+                case CURRENT:
+                    return bookingRepository.findByItem_OwnerIdAndEndAfterAndStartBeforeOrderByStartDesc(ownerId,
+                            LocalDateTime.now(), LocalDateTime.now());
+                case PAST:
+                    return bookingRepository.findByItem_OwnerIdAndEndBeforeOrderByStartDesc(ownerId,
+                            LocalDateTime.now());
+                case FUTURE:
+                    return bookingRepository.findByItem_OwnerIdAndStartAfterOrderByStartDesc(ownerId,
+                            LocalDateTime.now());
+                case WAITING:
+                    return bookingRepository.findByItem_OwnerIdAndStatusOrderByStartDesc(ownerId, WAITING);
+                case REJECTED:
+                    return bookingRepository.findByItem_OwnerIdAndStatusOrderByStartDesc(ownerId, REJECTED);
+                default:
+                    throw new IllegalArgumentException();
+            }
         } catch (NotFoundException e) {
             throw new NotFoundException("Бронирования не найдены");
         }
