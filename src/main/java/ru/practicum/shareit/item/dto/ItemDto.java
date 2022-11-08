@@ -22,6 +22,4 @@ public class ItemDto {
     @NotNull(message = "Available is null")
     private Boolean available;
     private User owner;
-    //    TODO: реализовать систему запросов
-    //    private ItemRequest request;
 }

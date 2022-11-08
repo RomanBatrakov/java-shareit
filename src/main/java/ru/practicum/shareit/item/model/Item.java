@@ -24,6 +24,4 @@ public class Item {
     @ManyToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private User owner;
-    //    TODO: реализовать систему запросов
-    //    private ItemRequest request;
 }
