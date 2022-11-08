@@ -4,15 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import ru.practicum.shareit.booking.BookingStatus;
-import ru.practicum.shareit.user.User;
 
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @AllArgsConstructor
-public class BookingToUserDto {
+public class BookingSimpleDto {
     private int id;
     @NotNull
     @FutureOrPresent

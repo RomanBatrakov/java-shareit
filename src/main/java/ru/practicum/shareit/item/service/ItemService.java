@@ -1,6 +1,8 @@
 package ru.practicum.shareit.item.service;
 
-import ru.practicum.shareit.item.Item;
+import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.model.Comment;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.dto.ItemWithBookingsDto;
 
 import java.util.List;
@@ -18,4 +20,6 @@ public interface ItemService {
     Item updateItem(int itemId, int userId, Item item);
 
     ItemWithBookingsDto itemConverter(int userId, Item item);
+
+    CommentDto createComment(int itemId, int userId, Comment comment);
 }

@@ -1,10 +1,8 @@
 package ru.practicum.shareit.item.dto;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.User;
 
 import javax.validation.constraints.NotBlank;
@@ -24,5 +22,6 @@ public class ItemDto {
     @NotNull(message = "Available is null")
     private Boolean available;
     private User owner;
-//    private ItemRequest request;
+    //    TODO: реализовать систему запросов
+    //    private ItemRequest request;
 }

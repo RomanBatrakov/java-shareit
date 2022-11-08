@@ -4,11 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import ru.practicum.shareit.booking.Booking;
-import ru.practicum.shareit.booking.dto.BookingToUserDto;
+import ru.practicum.shareit.booking.dto.BookingSimpleDto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Getter
 @Setter
@@ -24,8 +24,9 @@ public class ItemWithBookingsDto {
     private String description;
     @NotNull(message = "Available is null")
     private Boolean available;
-    private BookingToUserDto lastBooking;
-    private BookingToUserDto nextBooking;
-//    private User owner;
-//    private ItemRequest request;
+    private BookingSimpleDto lastBooking;
+    private BookingSimpleDto nextBooking;
+    private List<CommentDto> comments;
+    //    TODO: реализовать систему запросов
+    //    private ItemRequest request;
 }

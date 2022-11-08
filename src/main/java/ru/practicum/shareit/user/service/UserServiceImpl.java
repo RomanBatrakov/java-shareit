@@ -41,14 +41,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateUser(int id, User user) {
         try {
-                User userFromDb = userRepository.findById(id).get();
-                if (user.getName() != null) {
-                    userFromDb.setName(user.getName());
-                }
-                if (user.getEmail() != null) {
-                    userFromDb.setEmail(user.getEmail());
-                }
-                return userRepository.save(userFromDb);
+            User userFromDb = userRepository.findById(id).get();
+            if (user.getName() != null) {
+                userFromDb.setName(user.getName());
+            }
+            if (user.getEmail() != null) {
+                userFromDb.setEmail(user.getEmail());
+            }
+            return userRepository.save(userFromDb);
         } catch (NotFoundException e) {
             throw new NotFoundException("Пользователь не найден");
         }

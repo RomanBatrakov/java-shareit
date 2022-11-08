@@ -1,6 +1,5 @@
-package ru.practicum.shareit.item;
+package ru.practicum.shareit.item.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,9 +24,6 @@ public class Item {
     @ManyToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private User owner;
-
-//    TODO: реализовать систему запросов
-//    @OneToOne
-//    @JoinColumn(name = "request_id", referencedColumnName = "id")
-//    private ItemRequest request;
+    //    TODO: реализовать систему запросов
+    //    private ItemRequest request;
 }
