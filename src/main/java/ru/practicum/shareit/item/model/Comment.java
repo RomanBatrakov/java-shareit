@@ -21,14 +21,16 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(name = "text")
     @NotNull(message = "Text is null")
     @NotBlank(message = "Text is mandatory")
     private String text;
     @ManyToOne
-    @JoinColumn(name = "item_id")
+    @JoinColumn(name = "item_id", referencedColumnName = "id")
     private Item item;
     @ManyToOne
     @JoinColumn(name = "author_id", referencedColumnName = "id")
     private User author;
+    @Column(name = "created")
     private LocalDateTime created;
 }
