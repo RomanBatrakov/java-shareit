@@ -21,7 +21,7 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "text")
+    @Column(name = "text1")
     @NotNull(message = "Text is null")
     @NotBlank(message = "Text is mandatory")
     private String text;
