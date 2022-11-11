@@ -1,13 +1,13 @@
 package ru.practicum.shareit.user;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "/users")
@@ -15,29 +15,26 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private final UserService service;
-    private final UserMapper userMapper;
 
     @GetMapping("/{id}")
-    public UserDto getUserById(@PathVariable int id) {
-        return userMapper.toUserDto(service.getUserById(id).get());
+    public ResponseEntity<UserDto> getUserById(@PathVariable int id) {
+        return ResponseEntity.ok(service.getUserById(id));
     }
 
     @GetMapping
-    public List<UserDto> getAllUsers() {
-        return service.getAllUsers().stream()
-                .map(userMapper::toUserDto)
-                .collect(Collectors.toList());
+    public ResponseEntity<List<UserDto>> getAllUsers() {
+        return ResponseEntity.ok(service.getAllUsers());
     }
 
     @PostMapping
-    public UserDto createUser(@Valid @RequestBody UserDto userDto) {
-        return userMapper.toUserDto(service.createUser(userMapper.toUser(userDto)));
+    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
+        return ResponseEntity.ok(service.createUser(userDto));
     }
 
     @PatchMapping("/{id}")
-    public UserDto updateUser(@PathVariable int id,
-                              @RequestBody UserDto userDto) {
-        return userMapper.toUserDto(service.updateUser(id, userMapper.toUser(userDto)));
+    public ResponseEntity<UserDto> updateUser(@PathVariable int id,
+                                              @RequestBody UserDto userDto) {
+        return ResponseEntity.ok(service.updateUser(id, userDto));
     }
 
     @DeleteMapping("/{id}")

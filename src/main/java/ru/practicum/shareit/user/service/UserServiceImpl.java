@@ -5,42 +5,48 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exeption.NotFoundException;
 import ru.practicum.shareit.exeption.ValidationException;
 import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.dao.UserRepository;
+import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Override
-    public Optional<User> getUserById(int id) {
+    public UserDto getUserById(int id) {
         try {
-            return userRepository.findById(id);
+            return userMapper.toUserDto(userRepository.findById(id).get());
         } catch (NotFoundException e) {
             throw new NotFoundException("Пользователь не найден");
         }
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserDto> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(userMapper::toUserDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public User createUser(User user) {
+    public UserDto createUser(UserDto userDto) {
         try {
-            return userRepository.save(user);
+            return userMapper.toUserDto(userRepository.save(userMapper.toUser(userDto)));
         } catch (NotFoundException e) {
             throw new ValidationException("Ошибка входящих данных");
         }
     }
 
     @Override
-    public User updateUser(int id, User user) {
+    public UserDto updateUser(int id, UserDto userDto) {
         try {
+            User user = userMapper.toUser(userDto);
             User userFromDb = userRepository.findById(id).get();
             if (user.getName() != null) {
                 userFromDb.setName(user.getName());
@@ -48,7 +54,7 @@ public class UserServiceImpl implements UserService {
             if (user.getEmail() != null) {
                 userFromDb.setEmail(user.getEmail());
             }
-            return userRepository.save(userFromDb);
+            return userMapper.toUserDto(userRepository.save(userFromDb));
         } catch (NotFoundException e) {
             throw new NotFoundException("Пользователь не найден");
         }

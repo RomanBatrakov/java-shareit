@@ -8,5 +8,7 @@ import ru.practicum.shareit.booking.dto.BookingSimpleDto;
 public interface BookingMapper {
     BookingDto toBookingDto(Booking booking);
 
+    Booking toBooking(BookingDto bookingDto);
+
     BookingSimpleDto toBookingSimpleDto(Booking booking);
 }
