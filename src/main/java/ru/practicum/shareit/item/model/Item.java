@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
@@ -27,4 +28,7 @@ public class Item {
     @ManyToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private User owner;
+    @OneToOne
+    @JoinColumn(name = "request_id", referencedColumnName = "id")
+    private ItemRequest request;
 }

@@ -25,6 +25,4 @@ public class ItemWithBookingsDto {
     private BookingSimpleDto lastBooking;
     private BookingSimpleDto nextBooking;
     private List<CommentDto> comments;
-    //    TODO: реализовать систему запросов
-    //    private ItemRequest request;
 }

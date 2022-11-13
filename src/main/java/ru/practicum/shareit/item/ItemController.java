@@ -50,7 +50,7 @@ public class ItemController {
     @PatchMapping("/{itemId}")
     public ResponseEntity<ItemDto> updateItem(@PathVariable int itemId,
                                               @RequestHeader("X-Sharer-User-Id") int userId,
-                                              @RequestBody ItemDto itemDto) {
+                                              @Valid @RequestBody ItemDto itemDto) {
         return ResponseEntity.ok(service.updateItem(itemId, userId, itemDto));
     }
 }
