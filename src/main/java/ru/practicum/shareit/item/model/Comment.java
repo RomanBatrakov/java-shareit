@@ -22,8 +22,6 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name = "text")
-    @NotNull(message = "Text is null")
-    @NotBlank(message = "Text is mandatory")
     private String text;
     @ManyToOne
     @JoinColumn(name = "item_id", referencedColumnName = "id")

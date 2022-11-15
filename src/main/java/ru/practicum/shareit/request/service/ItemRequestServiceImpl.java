@@ -1,7 +1,6 @@
 package ru.practicum.shareit.request.service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exeption.NotFoundException;
@@ -49,11 +48,12 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public Page<ItemRequestDto> getAllUsersRequests(int userId, Pageable pageable) {
+    public List<ItemRequestDto> getAllUsersRequests(int userId, Pageable pageable) {
         User user = userMapper.toUser(userService.getUserById(userId));
         try {
-        return itemRequestRepository.findByRequestorNotLike(user, pageable)
-                .map(itemRequestMapper::toItemRequestDto);
+        return itemRequestRepository.findByRequestorNotLike(user, pageable).stream()
+                .map(itemRequestMapper::toItemRequestDto)
+                .collect(Collectors.toList());
         } catch (NoSuchElementException e) {
             throw new NotFoundException("Запросы не найдены");
         }
@@ -65,5 +65,13 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         itemRequest.setCreated(LocalDateTime.now());
         itemRequest.setRequestor(userMapper.toUser(userService.getUserById(userId)));
         return itemRequestMapper.toItemRequestDto(itemRequestRepository.save(itemRequest));
+    }
+
+    public ItemRequest findById(int requestId) {
+        try {
+            return itemRequestRepository.findById(requestId).get();
+        } catch (NoSuchElementException e) {
+            throw new NotFoundException("Запрос не найден");
+        }
     }
 }

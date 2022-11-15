@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import javax.validation.constraints.NotBlank;
@@ -25,5 +24,5 @@ public class ItemDto {
     @NotNull(message = "Available is null")
     private Boolean available;
     private UserDto owner;
-    private ItemRequestDto request;
+    private Integer requestId;
 }

@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.service;
 
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingMapper;
@@ -17,6 +18,8 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.item.dto.ItemWithBookingsDto;
+import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.service.ItemRequestService;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.service.UserService;
@@ -35,10 +38,12 @@ public class ItemServiceImpl implements ItemService {
     private final CommentMapper commentMapper;
     private final UserMapper userMapper;
     private final CommentRepository commentRepository;
+    private final ItemRequestService itemRequestService;
 
     public ItemServiceImpl(ItemRepository itemRepository, UserService userService, @Lazy BookingService bookingService,
                            ItemMapper itemMapper, BookingMapper bookingMapper, CommentMapper commentMapper,
-                           UserMapper userMapper, CommentRepository commentRepository) {
+                           UserMapper userMapper, CommentRepository commentRepository,
+                           ItemRequestService itemRequestService) {
         this.itemRepository = itemRepository;
         this.userService = userService;
         this.bookingService = bookingService;
@@ -47,6 +52,7 @@ public class ItemServiceImpl implements ItemService {
         this.commentMapper = commentMapper;
         this.userMapper = userMapper;
         this.commentRepository = commentRepository;
+        this.itemRequestService = itemRequestService;
     }
 
     @Override
@@ -59,9 +65,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemWithBookingsDto> getAllOwnerItems(int userId) {
+    public List<ItemWithBookingsDto> getAllOwnerItems(int userId, Pageable pageable) {
         try {
-            return itemRepository.findByOwner_Id(userId).stream()
+            return itemRepository.findByOwner_Id(userId, pageable).stream()
                     .map(x -> itemConverter(userId, x))
                     .collect(Collectors.toList());
         } catch (NoSuchElementException e) {
@@ -70,12 +76,12 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> search(String text) {
+    public List<ItemDto> search(String text, Pageable pageable) {
         if (text.isEmpty()) {
             return new ArrayList<>();
         } else {
-            List<Item> items = itemRepository.findByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(text, text);
-            return items.stream()
+            return itemRepository.findByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(text, text, pageable)
+                    .stream()
                     .map(itemMapper::toItemDto)
                     .collect(Collectors.toList());
         }
@@ -83,10 +89,17 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto createItem(int userId, ItemDto itemDto) {
+        ItemRequest itemRequest = null;
         Item item = itemMapper.toItem(itemDto);
+        if (itemDto.getRequestId() != null) {
+            itemRequest = itemRequestService.findById(itemDto.getRequestId());
+        }
         if (item.getOwner() == null && item.getId() == 0) {
             item.setOwner(userMapper.toUser(userService.getUserById(userId)));
-            return itemMapper.toItemDto(itemRepository.save(item));
+            item.setRequest(itemRequest);
+            ItemDto newItemDto = itemMapper.toItemDto(itemRepository.save(item));
+            newItemDto.setRequestId(itemDto.getRequestId());
+            return newItemDto;
         } else {
             throw new NotFoundException("Ошибка входящих данных");
         }
@@ -104,6 +117,8 @@ public class ItemServiceImpl implements ItemService {
                     itemFromDb.setDescription(item.getDescription());
                 if (item.getAvailable() != null)
                     itemFromDb.setAvailable(item.getAvailable());
+                if (item.getRequest() != null)
+                    itemFromDb.setRequest(item.getRequest());
                 itemFromDb.setOwner(userMapper.toUser(userService.getUserById(userId)));
                 return itemMapper.toItemDto(itemRepository.save(itemFromDb));
             } else {
@@ -161,17 +176,18 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public CommentDto createComment(int itemId, int userId, Comment comment) {
+    public CommentDto createComment(int itemId, int userId, CommentDto commentDto) {
         Item item = getItemById(itemId).get();
         User user = userMapper.toUser(userService.getUserById(userId));
         if (!bookingService.findByItem_IdAndBooker_IdAndStatusAndEndBefore(itemId,
                 userId, BookingStatus.APPROVED, LocalDateTime.now()).isEmpty()) {
+            Comment comment = commentMapper.toComment(commentDto);
             comment.setAuthor(user);
             comment.setItem(item);
             comment.setCreated(LocalDateTime.now());
-            CommentDto commentDto = commentMapper.toCommentDto(commentRepository.save(comment));
-            commentDto.setAuthorName(user.getName());
-            return commentDto;
+            CommentDto newCommentDto = commentMapper.toCommentDto(commentRepository.save(comment));
+            newCommentDto.setAuthorName(user.getName());
+            return newCommentDto;
         } else {
             throw new IllegalArgumentException("Ошибка входящих данных");
         }
