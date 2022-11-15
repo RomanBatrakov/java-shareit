@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exeption.NotFoundException;
+import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.request.ItemRequestMapper;
 import ru.practicum.shareit.request.dao.ItemRequestRepository;
@@ -13,6 +14,7 @@ import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -24,6 +26,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final UserService userService;
     private final UserMapper userMapper;
     private final ItemRequestRepository itemRequestRepository;
+    private final ItemService itemService;
 
     @Override
     public List<ItemRequestDto> getAllRequests(int userId) {
@@ -31,6 +34,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         try {
             return itemRequestRepository.findByRequestor_Id(userId).stream()
                     .map(itemRequestMapper::toItemRequestDto)
+                    .peek(x -> x.setItems(itemService.getRequestItems(x.getId())))
                     .collect(Collectors.toList());
         } catch (NoSuchElementException e) {
             throw new NotFoundException("Запросы не найдены");
@@ -41,7 +45,10 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public ItemRequestDto getRequest(int userId, int requestId) {
         userService.getUserById(userId);
         try {
-            return itemRequestMapper.toItemRequestDto(itemRequestRepository.findById(requestId).get());
+            ItemRequestDto itemRequestDto = itemRequestMapper.toItemRequestDto(itemRequestRepository.findById(requestId)
+                    .get());
+            itemRequestDto.setItems(itemService.getRequestItems(requestId));
+            return itemRequestDto;
         } catch (NoSuchElementException e) {
             throw new NotFoundException("Запрос не найден");
         }
@@ -51,9 +58,10 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public List<ItemRequestDto> getAllUsersRequests(int userId, Pageable pageable) {
         User user = userMapper.toUser(userService.getUserById(userId));
         try {
-        return itemRequestRepository.findByRequestorNotLike(user, pageable).stream()
-                .map(itemRequestMapper::toItemRequestDto)
-                .collect(Collectors.toList());
+            return itemRequestRepository.findByRequestorNotLike(user, pageable).stream()
+                    .map(itemRequestMapper::toItemRequestDto)
+                    .peek(x -> x.setItems(itemService.getRequestItems(x.getId())))
+                    .collect(Collectors.toList());
         } catch (NoSuchElementException e) {
             throw new NotFoundException("Запросы не найдены");
         }
@@ -64,7 +72,9 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         ItemRequest itemRequest = itemRequestMapper.toItemRequest(itemRequestDto);
         itemRequest.setCreated(LocalDateTime.now());
         itemRequest.setRequestor(userMapper.toUser(userService.getUserById(userId)));
-        return itemRequestMapper.toItemRequestDto(itemRequestRepository.save(itemRequest));
+        itemRequestDto = itemRequestMapper.toItemRequestDto(itemRequestRepository.save(itemRequest));
+        itemRequestDto.setItems(new ArrayList<>());
+        return itemRequestDto;
     }
 
     public ItemRequest findById(int requestId) {

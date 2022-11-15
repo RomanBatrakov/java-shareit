@@ -43,7 +43,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemServiceImpl(ItemRepository itemRepository, UserService userService, @Lazy BookingService bookingService,
                            ItemMapper itemMapper, BookingMapper bookingMapper, CommentMapper commentMapper,
                            UserMapper userMapper, CommentRepository commentRepository,
-                           ItemRequestService itemRequestService) {
+                           @Lazy ItemRequestService itemRequestService) {
         this.itemRepository = itemRepository;
         this.userService = userService;
         this.bookingService = bookingService;
@@ -190,6 +190,18 @@ public class ItemServiceImpl implements ItemService {
             return newCommentDto;
         } else {
             throw new IllegalArgumentException("Ошибка входящих данных");
+        }
+    }
+
+    @Override
+    public List<ItemDto> getRequestItems(int requestId) {
+        try {
+            return itemRepository.findByRequest_Id(requestId).stream()
+                    .map(itemMapper::toItemDto)
+                    .peek(x -> x.setRequestId(requestId))
+                    .collect(Collectors.toList());
+        } catch (NoSuchElementException e) {
+            return new ArrayList<>();
         }
     }
 }

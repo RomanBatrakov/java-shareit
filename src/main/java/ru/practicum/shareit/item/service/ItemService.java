@@ -24,4 +24,6 @@ public interface ItemService {
     ItemWithBookingsDto itemConverter(int userId, Item item);
 
     CommentDto createComment(int itemId, int userId, CommentDto commentDto);
+
+    List<ItemDto> getRequestItems(int requestId);
 }
