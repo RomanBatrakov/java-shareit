@@ -23,8 +23,8 @@ public class BookingController {
 
     @PostMapping
     public ResponseEntity<BookingDto> createBooking(@RequestHeader("X-Sharer-User-Id") int userId,
-                                                    @Valid @RequestBody BookingSimpleDto bookingToUserDto) {
-        return ResponseEntity.ok(service.createBooking(userId, bookingToUserDto));
+                                                    @Valid @RequestBody BookingSimpleDto bookingSimpleDto) {
+        return ResponseEntity.ok(service.createBooking(userId, bookingSimpleDto));
     }
 
     @PatchMapping("/{bookingId}")

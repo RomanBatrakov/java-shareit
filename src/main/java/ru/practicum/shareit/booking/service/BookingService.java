@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface BookingService {
-    BookingDto createBooking(int userId, BookingSimpleDto bookingToUserDto);
+    BookingDto createBooking(int userId, BookingSimpleDto bookingSimpleDto);
 
     BookingDto updateBooking(int bookingId, int userId, Boolean approved);
 

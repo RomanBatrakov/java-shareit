@@ -34,14 +34,14 @@ public class BookingServiceImpl implements BookingService {
     private final UserMapper userMapper;
 
     @Override
-    public BookingDto createBooking(int userId, BookingSimpleDto bookingToUserDto) {
+    public BookingDto createBooking(int userId, BookingSimpleDto bookingSimpleDto) {
         User user = userMapper.toUser(userService.getUserById(userId));
-        Item item = itemService.getItemById(bookingToUserDto.getItemId()).get();
+        Item item = itemService.getItemById(bookingSimpleDto.getItemId()).get();
         if (item.getOwner().getId() == user.getId()) throw new NotFoundException("Владелец не может бронировать");
-        if (bookingToUserDto.getStart().isBefore(bookingToUserDto.getEnd()) && item.getAvailable()) {
+        if (bookingSimpleDto.getStart().isBefore(bookingSimpleDto.getEnd()) && item.getAvailable()) {
             Booking booking = Booking.builder()
-                    .start(bookingToUserDto.getStart())
-                    .end(bookingToUserDto.getEnd())
+                    .start(bookingSimpleDto.getStart())
+                    .end(bookingSimpleDto.getEnd())
                     .item(item)
                     .booker(user)
                     .status(WAITING)
