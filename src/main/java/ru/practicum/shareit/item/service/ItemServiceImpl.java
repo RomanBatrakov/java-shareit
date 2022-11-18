@@ -204,4 +204,9 @@ public class ItemServiceImpl implements ItemService {
             return new ArrayList<>();
         }
     }
+
+    @Override
+    public ItemWithBookingsDto getItemWithBookingsById(int userId, int itemId) {
+        return itemConverter(userId, getItemById(itemId).get());
+    }
 }

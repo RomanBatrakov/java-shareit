@@ -14,13 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 public class ItemWithBookingsDto {
     private int id;
-    @NotNull(message = "Name is null")
-    @NotBlank(message = "Name is mandatory")
     private String name;
-    @NotNull(message = "Description is null")
-    @NotBlank(message = "Description is mandatory")
     private String description;
-    @NotNull(message = "Available is null")
     private Boolean available;
     private BookingSimpleDto lastBooking;
     private BookingSimpleDto nextBooking;

@@ -23,9 +23,9 @@ public class ItemController {
     private final ItemService service;
 
     @GetMapping("/{itemId}")
-    public ResponseEntity<ItemWithBookingsDto> getItemById(@RequestHeader("X-Sharer-User-Id") int userId,
+    public ResponseEntity<ItemWithBookingsDto> getItemWithBookingsById(@RequestHeader("X-Sharer-User-Id") int userId,
                                                            @PathVariable int itemId) {
-        return ResponseEntity.ok(service.itemConverter(userId, service.getItemById(itemId).get()));
+        return ResponseEntity.ok(service.getItemWithBookingsById(userId, itemId));
     }
 
     @GetMapping

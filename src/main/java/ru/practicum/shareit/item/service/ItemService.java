@@ -26,4 +26,6 @@ public interface ItemService {
     CommentDto createComment(int itemId, int userId, CommentDto commentDto);
 
     List<ItemDto> getRequestItems(int requestId);
+
+    ItemWithBookingsDto getItemWithBookingsById (int userId, int itemId);
 }
