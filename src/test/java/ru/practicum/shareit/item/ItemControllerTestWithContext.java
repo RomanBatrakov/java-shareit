@@ -81,6 +81,7 @@ class ItemControllerTestWithContext {
     }
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void getAllOwnerItems() throws Exception {
         when(itemService.getAllOwnerItems(anyInt(), any()))
                 .thenReturn(List.of(itemWithBookingsDto));
@@ -97,6 +98,7 @@ class ItemControllerTestWithContext {
     }
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void search() throws Exception {
         when(itemService.search(anyString(), any()))
                 .thenReturn(List.of(itemDto));
@@ -111,6 +113,7 @@ class ItemControllerTestWithContext {
     }
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void createItem() throws Exception {
         when(itemService.createItem(anyInt(), any()))
                 .thenReturn(itemDto);
@@ -131,6 +134,7 @@ class ItemControllerTestWithContext {
     }
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void createComment() throws Exception {
         CommentDto commentDto = CommentDto.builder()
                 .id(1)
@@ -156,6 +160,7 @@ class ItemControllerTestWithContext {
     }
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void updateItem() throws Exception {
         when(itemService.updateItem(anyInt(), anyInt(), any()))
                 .thenReturn(itemDto);
