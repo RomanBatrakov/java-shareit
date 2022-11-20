@@ -31,40 +31,27 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public List<ItemRequestDto> getAllRequests(int userId) {
         userService.getUserById(userId);
-        try {
             return itemRequestRepository.findByRequestor_Id(userId).stream()
                     .map(itemRequestMapper::toItemRequestDto)
                     .peek(x -> x.setItems(itemService.getRequestItems(x.getId())))
                     .collect(Collectors.toList());
-        } catch (NoSuchElementException e) {
-            throw new NotFoundException("Запросы не найдены");
-        }
     }
 
     @Override
     public ItemRequestDto getRequest(int userId, int requestId) {
         userService.getUserById(userId);
-        try {
-            ItemRequestDto itemRequestDto = itemRequestMapper.toItemRequestDto(itemRequestRepository.findById(requestId)
-                    .get());
+            ItemRequestDto itemRequestDto = itemRequestMapper.toItemRequestDto(findById(requestId));
             itemRequestDto.setItems(itemService.getRequestItems(requestId));
             return itemRequestDto;
-        } catch (NoSuchElementException e) {
-            throw new NotFoundException("Запрос не найден");
-        }
     }
 
     @Override
     public List<ItemRequestDto> getAllUsersRequests(int userId, Pageable pageable) {
         User user = userMapper.toUser(userService.getUserById(userId));
-        try {
-            return itemRequestRepository.findByRequestorNotLike(user, pageable).stream()
-                    .map(itemRequestMapper::toItemRequestDto)
-                    .peek(x -> x.setItems(itemService.getRequestItems(x.getId())))
-                    .collect(Collectors.toList());
-        } catch (NoSuchElementException e) {
-            throw new NotFoundException("Запросы не найдены");
-        }
+        return itemRequestRepository.findByRequestorNotLike(user, pageable).stream()
+                .map(itemRequestMapper::toItemRequestDto)
+                .peek(x -> x.setItems(itemService.getRequestItems(x.getId())))
+                .collect(Collectors.toList());
     }
 
     @Override

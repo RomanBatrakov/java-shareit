@@ -4,12 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-import ru.practicum.shareit.config.WebConfig;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -21,31 +19,23 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringJUnitWebConfig({UserController.class, WebConfig.class})
+@WebMvcTest(controllers = UserController.class)
 class UserControllerTestWithContext {
-    private final ObjectMapper mapper = new ObjectMapper();
-    private final UserService userService;
+    @Autowired
+    ObjectMapper mapper;
+    @MockBean
+    UserService userService;
+    @Autowired
     private MockMvc mvc;
     private UserDto userDto;
 
-    @Autowired
-    UserControllerTestWithContext(UserService userService) {
-        this.userService = userService;
-    }
 
     @BeforeEach
-    void setUp(WebApplicationContext wac) {
-        mvc = MockMvcBuilders
-                .webAppContextSetup(wac)
-                .build();
-
+    void setUp() {
         userDto = new UserDto(
                 1,
                 "John",
@@ -96,11 +86,11 @@ class UserControllerTestWithContext {
     }
 
     @Test
-    void updateUser() throws Exception{
+    void updateUser() throws Exception {
         when(userService.updateUser(anyInt(), any()))
                 .thenReturn(userDto);
 
-        mvc.perform(patch("/users/{id}",1)
+        mvc.perform(patch("/users/{id}", 1)
                         .content(mapper.writeValueAsString(userDto))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)

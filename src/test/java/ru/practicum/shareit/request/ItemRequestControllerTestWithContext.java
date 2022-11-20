@@ -1,17 +1,14 @@
 package ru.practicum.shareit.request;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-import ru.practicum.shareit.config.WebConfig;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -28,27 +25,21 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringJUnitWebConfig({ItemRequestController.class, WebConfig.class})
+@WebMvcTest(controllers = ItemRequestController.class)
 class ItemRequestControllerTestWithContext {
-
-    private final ObjectMapper mapper = JsonMapper.builder().findAndAddModules().build();
-
-    private final ItemRequestService itemRequestService;
+    @Autowired
+    ObjectMapper mapper;
+    @MockBean
+    ItemRequestService itemRequestService;
+    @Autowired
     private MockMvc mvc;
     private ItemRequestDto itemRequestDto;
 
-    @Autowired
-    ItemRequestControllerTestWithContext(ItemRequestService itemRequestService) {
-        this.itemRequestService = itemRequestService;
-    }
-
     @BeforeEach
-    void setUp(WebApplicationContext wac) {
-        mvc = MockMvcBuilders
-                .webAppContextSetup(wac)
-                .build();
+    void setUp() {
         UserDto userDto = new UserDto(1, "John", "john.doe@mail.com");
         itemRequestDto = new ItemRequestDto(
                 1,

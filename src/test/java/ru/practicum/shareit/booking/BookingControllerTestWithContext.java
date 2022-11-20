@@ -1,24 +1,18 @@
 package ru.practicum.shareit.booking;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingSimpleDto;
 import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.config.WebConfig;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemWithBookingsDto;
-import ru.practicum.shareit.item.service.ItemService;
-import ru.practicum.shareit.user.UserController;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.nio.charset.StandardCharsets;
@@ -27,7 +21,6 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -35,24 +28,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.practicum.shareit.booking.BookingStatus.WAITING;
 
-@SpringJUnitWebConfig({BookingController.class, WebConfig.class})
+@WebMvcTest(controllers = BookingController.class)
 class BookingControllerTestWithContext {
-    private final ObjectMapper mapper = JsonMapper.builder().findAndAddModules().build();
-    private final BookingService bookingService;
+    @Autowired
+    ObjectMapper mapper;
+    @MockBean
+    BookingService bookingService;
+    @Autowired
     private MockMvc mvc;
     private BookingDto bookingDto;
     private BookingSimpleDto bookingSimpleDto;
 
-    @Autowired
-    BookingControllerTestWithContext(BookingService bookingService) {
-        this.bookingService = bookingService;
-    }
-
     @BeforeEach
-    void setUp(WebApplicationContext wac) {
-        mvc = MockMvcBuilders
-                .webAppContextSetup(wac)
-                .build();
+    void setUp() {
         UserDto booker = new UserDto(1, "John", "john.doe@mail.com");
         UserDto owner = new UserDto(2, "John2", "john2.doe@mail.com");
         ItemDto item = new ItemDto(1, "Item", "description", true, owner, 1);
@@ -95,7 +83,7 @@ class BookingControllerTestWithContext {
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void updateBooking() throws Exception{
+    void updateBooking() throws Exception {
         when(bookingService.updateBooking(anyInt(), anyInt(), anyBoolean()))
                 .thenReturn(bookingDto);
 
@@ -114,7 +102,7 @@ class BookingControllerTestWithContext {
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void getBookingById() throws Exception{
+    void getBookingById() throws Exception {
         when(bookingService.getBookingById(anyInt(), anyInt()))
                 .thenReturn(bookingDto);
 
@@ -132,7 +120,7 @@ class BookingControllerTestWithContext {
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void getUserBookings() throws Exception{
+    void getUserBookings() throws Exception {
         when(bookingService.getUserBookings(anyInt(), anyString(), any()))
                 .thenReturn(List.of(bookingDto));
 
@@ -152,7 +140,7 @@ class BookingControllerTestWithContext {
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void getOwnerBookings() throws Exception{
+    void getOwnerBookings() throws Exception {
         when(bookingService.getOwnerBookings(anyInt(), anyString(), any()))
                 .thenReturn(List.of(bookingDto));
 

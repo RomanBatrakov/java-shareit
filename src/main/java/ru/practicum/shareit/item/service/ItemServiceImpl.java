@@ -57,22 +57,19 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Optional<Item> getItemById(int itemId) {
-        try {
-            return itemRepository.findById(itemId);
-        } catch (NoSuchElementException e) {
+        Optional<Item> item = itemRepository.findById(itemId);
+        if (item.isPresent()) {
+            return item;
+        } else {
             throw new NotFoundException("Вещь не найдена");
         }
     }
 
     @Override
     public List<ItemWithBookingsDto> getAllOwnerItems(int userId, Pageable pageable) {
-        try {
             return itemRepository.findByOwner_Id(userId, pageable).stream()
                     .map(x -> itemConverter(userId, x))
                     .collect(Collectors.toList());
-        } catch (NoSuchElementException e) {
-            throw new NotFoundException("Вещи не найдены");
-        }
     }
 
     @Override

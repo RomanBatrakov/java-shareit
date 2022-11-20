@@ -1,17 +1,14 @@
 package ru.practicum.shareit.item;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-import ru.practicum.shareit.config.WebConfig;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemWithBookingsDto;
@@ -29,25 +26,19 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringJUnitWebConfig({ItemController.class, WebConfig.class})
+@WebMvcTest(controllers = ItemController.class)
 class ItemControllerTestWithContext {
-
-    private final ObjectMapper mapper = JsonMapper.builder().findAndAddModules().build();
-    private final ItemService itemService;
+    @Autowired
+    ObjectMapper mapper;
+    @MockBean
+    ItemService itemService;
+    @Autowired
     private MockMvc mvc;
     private ItemDto itemDto;
     private ItemWithBookingsDto itemWithBookingsDto;
 
-    @Autowired
-    ItemControllerTestWithContext(ItemService itemService) {
-        this.itemService = itemService;
-    }
-
     @BeforeEach
-    void setUp(WebApplicationContext wac) {
-        mvc = MockMvcBuilders
-                .webAppContextSetup(wac)
-                .build();
+    void setUp() {
         UserDto owner = new UserDto(1, "John", "john.doe@mail.com");
         itemDto = new ItemDto(
                 1,
