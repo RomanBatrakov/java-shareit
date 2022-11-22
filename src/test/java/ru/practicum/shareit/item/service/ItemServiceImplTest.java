@@ -96,7 +96,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void createItemWithIdTest()  {
+    void createItemWithIdTest() {
         assertThrows(NotFoundException.class, () -> itemService.createItem(1, itemDto4));
     }
 
@@ -146,7 +146,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void getItemWithBookingsById(){
+    void getItemWithBookingsById() {
         ItemWithBookingsDto item = itemService.getItemWithBookingsById(1, 1);
         assertThat(item.getNextBooking(), equalTo(null));
         assertThat(item.getLastBooking(), equalTo(null));
