@@ -10,5 +10,6 @@ import java.util.List;
 
 public interface ItemRequestRepository extends JpaRepository<ItemRequest, Integer> {
     List<ItemRequest> findByRequestor_Id(int userId);
+
     Page<ItemRequest> findByRequestorNotLike(User user, Pageable pageable);
 }
