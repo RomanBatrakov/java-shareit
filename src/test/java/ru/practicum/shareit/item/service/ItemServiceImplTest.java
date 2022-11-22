@@ -41,16 +41,12 @@ class ItemServiceImplTest {
     private final ItemService itemService;
     @Autowired
     private final UserService userService;
-
     @Autowired
     private final BookingRepository bookingRepository;
-
     @Autowired
     private final ItemRequestService itemRequestService;
-
     @Autowired
     private final ItemMapper itemMapper;
-
     @Autowired
     private final UserMapper userMapper;
     UserDto bookerDto;
