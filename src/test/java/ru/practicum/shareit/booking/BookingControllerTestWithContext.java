@@ -162,4 +162,17 @@ class BookingControllerTestWithContext {
                 .andExpect(jsonPath("$[0].status", is(bookingDto.getStatus().toString())));
         verify(bookingService).getOwnerBookings(anyInt(), anyString(), any());
     }
+
+    @Test
+    void getOwnerBookingsError() throws Exception {
+        when(bookingService.getOwnerBookings(anyInt(), eq("ALL"), any()))
+                .thenThrow(IllegalArgumentException.class);
+
+        mvc.perform(get("/bookings/owner")
+                        .header("X-Sharer-User-Id", 1)
+                        .param("state", "ALL")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError())
+                .andExpect(status().isBadRequest());
+    }
 }

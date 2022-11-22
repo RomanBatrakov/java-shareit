@@ -18,6 +18,7 @@ import ru.practicum.shareit.user.dto.UserDto;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -25,6 +26,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static ru.practicum.shareit.item.service.ItemTestData.commentDto;
 
 @WebMvcTest(controllers = ItemController.class)
 class ItemControllerTestWithContext {
@@ -69,6 +71,19 @@ class ItemControllerTestWithContext {
                 .andExpect(jsonPath("$.description", is(itemWithBookingsDto.getDescription())))
                 .andExpect(jsonPath("$.name", is(itemWithBookingsDto.getName())))
                 .andExpect(jsonPath("$.available", is(itemWithBookingsDto.getAvailable())));
+    }
+
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void getItemByIdError() throws Exception {
+        when(itemService.getItemWithBookingsById(anyInt(), anyInt()))
+                .thenThrow(NoSuchElementException.class);
+
+        mvc.perform(get("/items/{itemId}", 1)
+                        .header("X-Sharer-User-Id", 1)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError())
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -148,6 +163,22 @@ class ItemControllerTestWithContext {
                 .andExpect(jsonPath("$.authorName", is(commentDto.getAuthorName())))
                 .andExpect(jsonPath("$.created", is(commentDto.getCreated().withNano(0)
                         .toString())));
+    }
+
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void createCommentError() throws Exception {
+        when(itemService.createComment(anyInt(), anyInt(), any()))
+                .thenThrow(IllegalArgumentException.class);
+
+        mvc.perform(post("/items/{itemId}/comment", 1)
+                        .header("X-Sharer-User-Id", 1)
+                        .content(mapper.writeValueAsString(commentDto))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError())
+                .andExpect(status().isBadRequest());
     }
 
     @Test
