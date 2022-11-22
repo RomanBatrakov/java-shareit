@@ -14,19 +14,16 @@ public class ItemTestData {
             .name("item1").description("description1").available(true)
             .build();
     public static ItemDto itemDto2 = ItemDto.builder()
-            .id(2).name("item2").description("description2").available(true)
-            .build();
-    public static ItemDto itemDto3 = ItemDto.builder()
-            .id(3).name("item3").description("description3").available(false)
+            .name("item2").description("description2").requestId(1).available(true)
             .build();
     public static ItemDto itemDto4 = ItemDto.builder()
             .id(4).name("item4").description("description4")
             .available(true).build();
     public static ItemDto itemDtoCreated = ItemDto.builder()
-            .id(5).name("itemCreated").description("descriptionCreated").available(true)
+            .name("itemCreated").description("descriptionCreated").available(true)
             .build();
 
-    public static CommentDto commentDto = CommentDto.builder().id(1).text("comment")
+    public static CommentDto commentDto = CommentDto.builder().text("comment")
             .authorName("user2").created(LocalDateTime.now()).build();
 
     public static Item item1 = Item.builder().id(1).name("item1").description("description1")

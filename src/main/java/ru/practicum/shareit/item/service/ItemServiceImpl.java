@@ -104,7 +104,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto updateItem(int itemId, int userId, ItemDto itemDto) {
-        try {
             Item item = itemMapper.toItem(itemDto);
             Item itemFromDb = getItemById(itemId).get();
             if (itemFromDb.getOwner().getId() == userId) {
@@ -121,9 +120,6 @@ public class ItemServiceImpl implements ItemService {
             } else {
                 throw new NotFoundException("Ошибка входящих данных");
             }
-        } catch (NoSuchElementException e) {
-            throw new NotFoundException("Вещь не найдена");
-        }
     }
 
     @Override
@@ -192,14 +188,10 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getRequestItems(int requestId) {
-        try {
             return itemRepository.findByRequest_Id(requestId).stream()
                     .map(itemMapper::toItemDto)
                     .peek(x -> x.setRequestId(requestId))
                     .collect(Collectors.toList());
-        } catch (NoSuchElementException e) {
-            return new ArrayList<>();
-        }
     }
 
     @Override

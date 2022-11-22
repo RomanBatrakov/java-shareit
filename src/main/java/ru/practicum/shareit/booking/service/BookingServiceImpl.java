@@ -20,6 +20,7 @@ import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.booking.BookingStatus.*;
@@ -76,7 +77,7 @@ public class BookingServiceImpl implements BookingService {
             } else {
                 throw new NotFoundException("Ошибка валидации запроса");
             }
-        } catch (NotFoundException e) {
+        } catch (NoSuchElementException e) {
             throw new NotFoundException("Бронирование не найдено");
         }
     }
@@ -114,8 +115,6 @@ public class BookingServiceImpl implements BookingService {
                 default:
                     throw new IllegalArgumentException("Unknown state: " + state);
             }
-        } catch (NotFoundException e) {
-            throw new NotFoundException("Бронирования не найдены");
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Unknown state: " + state);
         }
@@ -157,8 +156,6 @@ public class BookingServiceImpl implements BookingService {
                 default:
                     throw new IllegalArgumentException("Unknown state: " + state);
             }
-        } catch (NotFoundException e) {
-            throw new NotFoundException("Бронирования не найдены");
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Unknown state: " + state);
         }
