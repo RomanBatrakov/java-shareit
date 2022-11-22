@@ -9,11 +9,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.Booking;
+import ru.practicum.shareit.booking.BookingStatus;
+import ru.practicum.shareit.booking.dao.BookingRepository;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.exeption.NotFoundException;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.service.ItemServiceImpl;
+import ru.practicum.shareit.user.UserMapper;
+import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserServiceImpl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -35,13 +43,21 @@ class BookingServiceImplTest {
     private final ItemServiceImpl itemService;
     @Autowired
     private final UserServiceImpl userService;
+    @Autowired
+    private final BookingRepository bookingRepository;
+    @Autowired
+    private final ItemMapper itemMapper;
+    @Autowired
+    private final UserMapper userMapper;
+    UserDto bookerDto;
+    ItemDto itemDto;
 
     @BeforeEach
     void setUp() {
         userService.createUser(userDto1);
-        userService.createUser(userDto2);
+        bookerDto = userService.createUser(userDto2);
         userService.createUser(userDto3);
-        itemService.createItem(1, itemDto1);
+        itemDto = itemService.createItem(1, itemDto1);
         bookingService.createBooking(2, bookingSimpleDto1);
     }
 
@@ -136,6 +152,24 @@ class BookingServiceImplTest {
         List<BookingDto> currentBookings = bookingService.getUserBookings(
                 2, "CURRENT", PageRequest.of(0, 10));
         assertThat(currentBookings.size(), equalTo(1));
+    }
+
+    @Test
+    void getPastStatusUserAndOwnerBookingsTest() {
+        Booking booking = Booking.builder()
+                .start(LocalDateTime.of(2022, 8, 1, 12, 15, 1))
+                .end(LocalDateTime.of(2022, 8, 2, 12, 15, 1))
+                .item(itemMapper.toItem(itemDto))
+                .booker(userMapper.toUser(bookerDto))
+                .status(BookingStatus.APPROVED)
+                .build();
+        bookingRepository.save(booking);
+        List<BookingDto> pastUserBookings = bookingService.getUserBookings(
+                2, "PAST", PageRequest.of(0, 10));
+        assertThat(pastUserBookings.size(), equalTo(1));
+        List<BookingDto> pastOwnerBookings = bookingService.getOwnerBookings(
+                1, "PAST", PageRequest.of(0, 10));
+        assertThat(pastOwnerBookings.size(), equalTo(1));
     }
 
     @Test
