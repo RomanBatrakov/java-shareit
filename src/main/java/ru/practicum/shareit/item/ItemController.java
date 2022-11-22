@@ -24,7 +24,7 @@ public class ItemController {
 
     @GetMapping("/{itemId}")
     public ResponseEntity<ItemWithBookingsDto> getItemWithBookingsById(@RequestHeader("X-Sharer-User-Id") int userId,
-                                                           @PathVariable int itemId) {
+                                                                       @PathVariable int itemId) {
         return ResponseEntity.ok(service.getItemWithBookingsById(userId, itemId));
     }
 
@@ -39,8 +39,10 @@ public class ItemController {
 
     @GetMapping("/search")
     public ResponseEntity<List<ItemDto>> search(@RequestParam String text,
-                                                @PositiveOrZero @RequestParam(required = false, defaultValue = "0") int from,
-                                                @Positive @RequestParam(required = false, defaultValue = "10") int size) {
+                                                @PositiveOrZero @RequestParam(
+                                                        required = false, defaultValue = "0") int from,
+                                                @Positive @RequestParam(
+                                                        required = false, defaultValue = "10") int size) {
         return ResponseEntity.ok(service.search(text, PageRequest.of((from / size), size)));
     }
 

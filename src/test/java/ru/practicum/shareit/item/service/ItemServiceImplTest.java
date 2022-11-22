@@ -138,9 +138,4 @@ class ItemServiceImplTest {
         List<ItemDto> items = itemService.getRequestItems(1);
         assertThat(items.size(), equalTo(1));
     }
-
-    @Test
-    void getItemWithBookingsById() {
-
-    }
 }

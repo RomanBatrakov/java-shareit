@@ -67,9 +67,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemWithBookingsDto> getAllOwnerItems(int userId, Pageable pageable) {
-            return itemRepository.findByOwner_Id(userId, pageable).stream()
-                    .map(x -> itemConverter(userId, x))
-                    .collect(Collectors.toList());
+        return itemRepository.findByOwner_Id(userId, pageable).stream()
+                .map(x -> itemConverter(userId, x))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -104,22 +104,22 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto updateItem(int itemId, int userId, ItemDto itemDto) {
-            Item item = itemMapper.toItem(itemDto);
-            Item itemFromDb = getItemById(itemId).get();
-            if (itemFromDb.getOwner().getId() == userId) {
-                if (item.getName() != null)
-                    itemFromDb.setName(item.getName());
-                if (item.getDescription() != null)
-                    itemFromDb.setDescription(item.getDescription());
-                if (item.getAvailable() != null)
-                    itemFromDb.setAvailable(item.getAvailable());
-                if (item.getRequest() != null)
-                    itemFromDb.setRequest(item.getRequest());
-                itemFromDb.setOwner(userMapper.toUser(userService.getUserById(userId)));
-                return itemMapper.toItemDto(itemRepository.save(itemFromDb));
-            } else {
-                throw new NotFoundException("Ошибка входящих данных");
-            }
+        Item item = itemMapper.toItem(itemDto);
+        Item itemFromDb = getItemById(itemId).get();
+        if (itemFromDb.getOwner().getId() == userId) {
+            if (item.getName() != null)
+                itemFromDb.setName(item.getName());
+            if (item.getDescription() != null)
+                itemFromDb.setDescription(item.getDescription());
+            if (item.getAvailable() != null)
+                itemFromDb.setAvailable(item.getAvailable());
+            if (item.getRequest() != null)
+                itemFromDb.setRequest(item.getRequest());
+            itemFromDb.setOwner(userMapper.toUser(userService.getUserById(userId)));
+            return itemMapper.toItemDto(itemRepository.save(itemFromDb));
+        } else {
+            throw new NotFoundException("Ошибка входящих данных");
+        }
     }
 
     @Override
@@ -188,10 +188,10 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getRequestItems(int requestId) {
-            return itemRepository.findByRequest_Id(requestId).stream()
-                    .map(itemMapper::toItemDto)
-                    .peek(x -> x.setRequestId(requestId))
-                    .collect(Collectors.toList());
+        return itemRepository.findByRequest_Id(requestId).stream()
+                .map(itemMapper::toItemDto)
+                .peek(x -> x.setRequestId(requestId))
+                .collect(Collectors.toList());
     }
 
     @Override

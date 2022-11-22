@@ -6,14 +6,11 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.dao.UserRepository;
-
-import javax.transaction.Transactional;
 
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+//TODO делать или нет хз
 @DataJpaTest
 class ItemRequestRepositoryTest {
     @Autowired
@@ -43,3 +40,7 @@ class ItemRequestRepositoryTest {
     void findByRequestorNotLike() {
     }
 }
+
+//        TypedQuery<User> query = em.createQuery("Select u from User u where u.email = :email", User.class);
+//        User user = query.setParameter("email", userDto.getEmail())
+//                .getSingleResult();

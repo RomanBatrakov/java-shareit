@@ -93,24 +93,24 @@ public class BookingServiceImpl implements BookingService {
                     userBookings = bookingRepository.findByBooker_IdOrderByStartDesc(userId, pageable);
                     break;
                 case CURRENT:
-                    userBookings = bookingRepository.findByBooker_IdAndEndAfterAndStartBeforeOrderByStartDesc(userId,
-                            LocalDateTime.now(), LocalDateTime.now(), pageable);
+                    userBookings = bookingRepository.findByBooker_IdAndEndAfterAndStartBeforeOrderByStartDesc(
+                            userId, LocalDateTime.now(), LocalDateTime.now(), pageable);
                     break;
                 case PAST:
-                    userBookings = bookingRepository.findByBooker_IdAndEndBeforeOrderByStartDesc(userId,
-                            LocalDateTime.now(), pageable);
+                    userBookings = bookingRepository.findByBooker_IdAndEndBeforeOrderByStartDesc(
+                            userId, LocalDateTime.now(), pageable);
                     break;
                 case FUTURE:
-                    userBookings = bookingRepository.findByBooker_IdAndStartAfterOrderByStartDesc(userId,
-                            LocalDateTime.now(), pageable);
+                    userBookings = bookingRepository.findByBooker_IdAndStartAfterOrderByStartDesc(
+                            userId, LocalDateTime.now(), pageable);
                     break;
                 case WAITING:
-                    userBookings = bookingRepository.findByBooker_IdAndStatusOrderByStartDesc(userId, WAITING,
-                            pageable);
+                    userBookings = bookingRepository.findByBooker_IdAndStatusOrderByStartDesc(
+                            userId, WAITING, pageable);
                     break;
                 case REJECTED:
-                    userBookings = bookingRepository.findByBooker_IdAndStatusOrderByStartDesc(userId, REJECTED,
-                            pageable);
+                    userBookings = bookingRepository.findByBooker_IdAndStatusOrderByStartDesc(
+                            userId, REJECTED, pageable);
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown state: " + state);
@@ -138,20 +138,20 @@ public class BookingServiceImpl implements BookingService {
                             ownerId, LocalDateTime.now(), LocalDateTime.now(), pageable);
                     break;
                 case PAST:
-                    ownerBookings = bookingRepository.findByItem_OwnerIdAndEndBeforeOrderByStartDesc(ownerId,
-                            LocalDateTime.now(), pageable);
+                    ownerBookings = bookingRepository.findByItem_OwnerIdAndEndBeforeOrderByStartDesc(
+                            ownerId, LocalDateTime.now(), pageable);
                     break;
                 case FUTURE:
-                    ownerBookings = bookingRepository.findByItem_OwnerIdAndStartAfterOrderByStartDesc(ownerId,
-                            LocalDateTime.now(), pageable);
+                    ownerBookings = bookingRepository.findByItem_OwnerIdAndStartAfterOrderByStartDesc(
+                            ownerId, LocalDateTime.now(), pageable);
                     break;
                 case WAITING:
-                    ownerBookings = bookingRepository.findByItem_OwnerIdAndStatusOrderByStartDesc(ownerId, WAITING,
-                            pageable);
+                    ownerBookings = bookingRepository.findByItem_OwnerIdAndStatusOrderByStartDesc(
+                            ownerId, WAITING, pageable);
                     break;
                 case REJECTED:
-                    ownerBookings = bookingRepository.findByItem_OwnerIdAndStatusOrderByStartDesc(ownerId, REJECTED,
-                            pageable);
+                    ownerBookings = bookingRepository.findByItem_OwnerIdAndStatusOrderByStartDesc(
+                            ownerId, REJECTED, pageable);
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown state: " + state);
@@ -170,9 +170,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<Booking> findByItem_IdAndBooker_IdAndStatusAndEndBefore(int itemId, int userId, BookingStatus
-            status,
-                                                                        LocalDateTime now) {
+    public List<Booking> findByItem_IdAndBooker_IdAndStatusAndEndBefore(
+            int itemId, int userId, BookingStatus status, LocalDateTime now) {
         return bookingRepository.findByItem_IdAndBooker_IdAndStatusAndEndBefore(itemId, userId, status, now);
     }
 }

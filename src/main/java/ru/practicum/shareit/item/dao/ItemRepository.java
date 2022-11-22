@@ -10,8 +10,8 @@ import java.util.List;
 public interface ItemRepository extends JpaRepository<Item, Integer> {
     Page<Item> findByOwner_Id(int userId, Pageable pageable);
 
-    Page<Item> findByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(String name, String description,
-                                                                           Pageable pageable);
+    Page<Item> findByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(
+            String name, String description, Pageable pageable);
 
     List<Item> findByRequest_Id(int requestId);
 }

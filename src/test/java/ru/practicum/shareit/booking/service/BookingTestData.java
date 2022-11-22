@@ -1,14 +1,8 @@
 package ru.practicum.shareit.booking.service;
 
-import ru.practicum.shareit.booking.Booking;
-import ru.practicum.shareit.booking.BookingStatus;
-import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingSimpleDto;
 
 import java.time.LocalDateTime;
-
-import static ru.practicum.shareit.item.service.ItemTestData.itemDto1;
-import static ru.practicum.shareit.user.service.UserTestData.userDto2;
 
 public class BookingTestData {
     public static final BookingSimpleDto bookingSimpleDto1 = BookingSimpleDto.builder()
@@ -33,6 +27,4 @@ public class BookingTestData {
             .end(LocalDateTime.now().plusDays(3))
             .itemId(1)
             .build();
-
-
 }

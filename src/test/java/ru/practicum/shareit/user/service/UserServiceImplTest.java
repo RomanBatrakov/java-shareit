@@ -92,7 +92,3 @@ class UserServiceImplTest {
         assertThrows(NotFoundException.class, () -> userService.deleteUser(100));
     }
 }
-
-//        TypedQuery<User> query = em.createQuery("Select u from User u where u.email = :email", User.class);
-//        User user = query.setParameter("email", userDto.getEmail())
-//                .getSingleResult();

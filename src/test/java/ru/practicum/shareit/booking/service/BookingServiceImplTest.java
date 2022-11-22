@@ -15,7 +15,6 @@ import ru.practicum.shareit.item.service.ItemServiceImpl;
 import ru.practicum.shareit.user.service.UserServiceImpl;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -64,22 +63,25 @@ class BookingServiceImplTest {
 
     @Test
     void updateBookingTest() {
-        bookingService.updateBooking(1,1,false);
-        List<BookingDto> bookings = bookingService.getUserBookings(
+        bookingService.updateBooking(1, 1, false);
+        List<BookingDto> userBookings = bookingService.getUserBookings(
                 2, "REJECTED", PageRequest.of(0, 10));
-        assertThat(bookings.size(), equalTo(1));
+        assertThat(userBookings.size(), equalTo(1));
+        List<BookingDto> ownerBookings = bookingService.getOwnerBookings(
+                1, "REJECTED", PageRequest.of(0, 10));
+        assertThat(ownerBookings.size(), equalTo(1));
     }
 
     @Test
     void updateBookingWrongUserTest() {
-        assertThrows(NotFoundException.class, () -> bookingService.updateBooking(1,2,false));
+        assertThrows(NotFoundException.class, () -> bookingService.updateBooking(1, 2, false));
     }
 
     @Test
     void updateBookingAlreadyApprovedTest() {
-        bookingService.updateBooking(1,1,true);
+        bookingService.updateBooking(1, 1, true);
         assertThrows(IllegalArgumentException.class, () -> bookingService.updateBooking(
-                1,1,true));
+                1, 1, true));
     }
 
     @Test
@@ -92,12 +94,12 @@ class BookingServiceImplTest {
 
     @Test
     void getBookingByWrongBookingIdTest() {
-        assertThrows(NotFoundException.class, () -> bookingService.getBookingById(2,10));
+        assertThrows(NotFoundException.class, () -> bookingService.getBookingById(2, 10));
     }
 
     @Test
     void getBookingByWrongUserIdTest() {
-        assertThrows(NotFoundException.class, () -> bookingService.getBookingById(3,1));
+        assertThrows(NotFoundException.class, () -> bookingService.getBookingById(3, 1));
     }
 
     @Test
@@ -124,13 +126,13 @@ class BookingServiceImplTest {
                 2, "WAITING", PageRequest.of(0, 10));
         assertThat(waitingBookings.size(), equalTo(2));
 
-        bookingService.updateBooking(2,1,true);
+        bookingService.updateBooking(2, 1, true);
         List<BookingDto> futureBookings = bookingService.getUserBookings(
                 2, "FUTURE", PageRequest.of(0, 10));
         assertThat(futureBookings.size(), equalTo(2));
 
         bookingService.createBooking(2, bookingSimpleDto2);
-        bookingService.updateBooking(3,1,true);
+        bookingService.updateBooking(3, 1, true);
         List<BookingDto> currentBookings = bookingService.getUserBookings(
                 2, "CURRENT", PageRequest.of(0, 10));
         assertThat(currentBookings.size(), equalTo(1));
@@ -148,7 +150,7 @@ class BookingServiceImplTest {
         String state = "WRONG";
         RuntimeException ex = Assertions.assertThrows(
                 IllegalArgumentException.class,
-                () -> bookingService.getUserBookings(2, state, PageRequest.of(0, 10)));
+                () -> bookingService.getOwnerBookings(2, state, PageRequest.of(0, 10)));
         assertEquals("Unknown state: " + state, ex.getMessage());
     }
 
@@ -159,13 +161,13 @@ class BookingServiceImplTest {
                 1, "WAITING", PageRequest.of(0, 10));
         assertThat(waitingBookings.size(), equalTo(2));
 
-        bookingService.updateBooking(2,1,true);
+        bookingService.updateBooking(2, 1, true);
         List<BookingDto> futureBookings = bookingService.getOwnerBookings(
                 1, "FUTURE", PageRequest.of(0, 10));
         assertThat(futureBookings.size(), equalTo(2));
 
         bookingService.createBooking(2, bookingSimpleDto2);
-        bookingService.updateBooking(3,1,true);
+        bookingService.updateBooking(3, 1, true);
         List<BookingDto> currentBookings = bookingService.getOwnerBookings(
                 1, "CURRENT", PageRequest.of(0, 10));
         assertThat(currentBookings.size(), equalTo(1));

@@ -22,7 +22,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -79,6 +79,7 @@ class BookingControllerTestWithContext {
                 .andExpect(jsonPath("$.item.name", is(bookingDto.getItem().getName())))
                 .andExpect(jsonPath("$.booker.name", is(bookingDto.getBooker().getName())))
                 .andExpect(jsonPath("$.status", is(bookingDto.getStatus().toString())));
+        verify(bookingService).createBooking(anyInt(), any());
     }
 
     @Test
@@ -98,6 +99,7 @@ class BookingControllerTestWithContext {
                 .andExpect(jsonPath("$.item.name", is(bookingDto.getItem().getName())))
                 .andExpect(jsonPath("$.booker.name", is(bookingDto.getBooker().getName())))
                 .andExpect(jsonPath("$.status", is(bookingDto.getStatus().toString())));
+        verify(bookingService).updateBooking(anyInt(), anyInt(), anyBoolean());
     }
 
     @Test
@@ -116,6 +118,7 @@ class BookingControllerTestWithContext {
                 .andExpect(jsonPath("$.item.name", is(bookingDto.getItem().getName())))
                 .andExpect(jsonPath("$.booker.name", is(bookingDto.getBooker().getName())))
                 .andExpect(jsonPath("$.status", is(bookingDto.getStatus().toString())));
+        verify(bookingService).getBookingById(anyInt(), anyInt());
     }
 
     @Test
@@ -136,6 +139,7 @@ class BookingControllerTestWithContext {
                 .andExpect(jsonPath("$[0].item.name", is(bookingDto.getItem().getName())))
                 .andExpect(jsonPath("$[0].booker.name", is(bookingDto.getBooker().getName())))
                 .andExpect(jsonPath("$[0].status", is(bookingDto.getStatus().toString())));
+        verify(bookingService).getUserBookings(anyInt(), anyString(), any());
     }
 
     @Test
@@ -156,5 +160,6 @@ class BookingControllerTestWithContext {
                 .andExpect(jsonPath("$[0].item.name", is(bookingDto.getItem().getName())))
                 .andExpect(jsonPath("$[0].booker.name", is(bookingDto.getBooker().getName())))
                 .andExpect(jsonPath("$[0].status", is(bookingDto.getStatus().toString())));
+        verify(bookingService).getOwnerBookings(anyInt(), anyString(), any());
     }
 }

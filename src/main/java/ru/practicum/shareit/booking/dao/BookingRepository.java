@@ -16,8 +16,8 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     Page<Booking> findByBooker_IdAndEndBeforeOrderByStartDesc(int userId, LocalDateTime now, Pageable pageable);
 
-    Page<Booking> findByBooker_IdAndEndAfterAndStartBeforeOrderByStartDesc(int userId, LocalDateTime now,
-                                                                           LocalDateTime now1, Pageable pageable);
+    Page<Booking> findByBooker_IdAndEndAfterAndStartBeforeOrderByStartDesc(
+            int userId, LocalDateTime now, LocalDateTime now1, Pageable pageable);
 
     Page<Booking> findByBooker_IdAndStartAfterOrderByStartDesc(int userId, LocalDateTime now, Pageable pageable);
 
@@ -25,8 +25,8 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     Page<Booking> findByItem_OwnerIdOrderByStartDesc(int ownerId, Pageable pageable);
 
-    Page<Booking> findByItem_OwnerIdAndEndAfterAndStartBeforeOrderByStartDesc(int ownerId, LocalDateTime now,
-                                                                              LocalDateTime now1, Pageable pageable);
+    Page<Booking> findByItem_OwnerIdAndEndAfterAndStartBeforeOrderByStartDesc(
+            int ownerId, LocalDateTime now, LocalDateTime now1, Pageable pageable);
 
     Page<Booking> findByItem_OwnerIdAndEndBeforeOrderByStartDesc(int ownerId, LocalDateTime now, Pageable pageable);
 
@@ -34,6 +34,6 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     Page<Booking> findByItem_OwnerIdAndStatusOrderByStartDesc(int ownerId, BookingStatus waiting, Pageable pageable);
 
-    List<Booking> findByItem_IdAndBooker_IdAndStatusAndEndBefore(int itemId, int userId, BookingStatus status,
-                                                                 LocalDateTime now);
+    List<Booking> findByItem_IdAndBooker_IdAndStatusAndEndBefore(
+            int itemId, int userId, BookingStatus status, LocalDateTime now);
 }

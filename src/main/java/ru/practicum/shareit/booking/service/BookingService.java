@@ -1,6 +1,5 @@
 package ru.practicum.shareit.booking.service;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingStatus;
@@ -23,6 +22,6 @@ public interface BookingService {
 
     List<Booking> getAllItemBookings(int itemId);
 
-    List<Booking> findByItem_IdAndBooker_IdAndStatusAndEndBefore(int itemId, int userId, BookingStatus status,
-                                                                 LocalDateTime now);
+    List<Booking> findByItem_IdAndBooker_IdAndStatusAndEndBefore(
+            int itemId, int userId, BookingStatus status, LocalDateTime now);
 }

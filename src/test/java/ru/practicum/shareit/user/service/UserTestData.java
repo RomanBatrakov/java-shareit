@@ -1,6 +1,5 @@
 package ru.practicum.shareit.user.service;
 
-import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dto.UserDto;
 
 public class UserTestData {
@@ -11,10 +10,4 @@ public class UserTestData {
             .email("userCreated@mail.ru").build();
     public static final UserDto userDtoWrongCreated = UserDto.builder().name("userDtoWrongCreated")
             .email("user1@mail.ru").build();
-    public static final User user1 = new User(1, "user1", "user1@mail.ru");
-    public static final User user2 = new User(2, "user2", "user2@mail.ru");
 }
-
-//        TypedQuery<User> query = em.createQuery("Select u from User u where u.email = :email", User.class);
-//        User user = query.setParameter("email", userDto.getEmail())
-//                .getSingleResult();
