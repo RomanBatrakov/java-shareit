@@ -17,10 +17,10 @@ import ru.practicum.shareit.item.dto.ItemWithBookingsDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
-import ru.practicum.shareit.request.service.ItemRequestServiceImpl;
+import ru.practicum.shareit.request.service.ItemRequestService;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.service.UserServiceImpl;
+import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,15 +38,15 @@ import static ru.practicum.shareit.user.service.UserTestData.userDto2;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class ItemServiceImplTest {
     @Autowired
-    private final ItemServiceImpl itemService;
+    private final ItemService itemService;
     @Autowired
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
     @Autowired
     private final BookingRepository bookingRepository;
 
     @Autowired
-    private final ItemRequestServiceImpl itemRequestService;
+    private final ItemRequestService itemRequestService;
 
     @Autowired
     private final ItemMapper itemMapper;
