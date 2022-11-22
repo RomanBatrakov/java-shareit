@@ -96,7 +96,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void createItemWithIdTest() {
+    void createItemWithIdTest()  {
         assertThrows(NotFoundException.class, () -> itemService.createItem(1, itemDto4));
     }
 
@@ -129,6 +129,12 @@ class ItemServiceImplTest {
     }
 
     @Test
+    void createCommentFailTest() {
+        assertThrows(IllegalArgumentException.class, () -> itemService.createComment(1, 1, commentDto));
+
+    }
+
+    @Test
     void getRequestItemsTest() {
         ItemRequestDto itemRequest1 = ItemRequestDto.builder()
                 .description("itemRequest1")
@@ -137,5 +143,13 @@ class ItemServiceImplTest {
         itemService.createItem(1, itemDto2);
         List<ItemDto> items = itemService.getRequestItems(1);
         assertThat(items.size(), equalTo(1));
+    }
+
+    @Test
+    void getItemWithBookingsById(){
+        ItemWithBookingsDto item = itemService.getItemWithBookingsById(1, 1);
+        assertThat(item.getNextBooking(), equalTo(null));
+        assertThat(item.getLastBooking(), equalTo(null));
+        assertThat(item.getName(), equalTo(itemDto1.getName()));
     }
 }
