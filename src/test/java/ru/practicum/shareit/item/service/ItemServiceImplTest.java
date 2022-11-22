@@ -131,7 +131,6 @@ class ItemServiceImplTest {
     @Test
     void createCommentFailTest() {
         assertThrows(IllegalArgumentException.class, () -> itemService.createComment(1, 1, commentDto));
-
     }
 
     @Test
