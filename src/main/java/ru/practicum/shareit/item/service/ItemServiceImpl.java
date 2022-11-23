@@ -107,14 +107,9 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemMapper.toItem(itemDto);
         Item itemFromDb = getItemById(itemId).get();
         if (itemFromDb.getOwner().getId() == userId) {
-            if (item.getName() != null)
-                itemFromDb.setName(item.getName());
-            if (item.getDescription() != null)
-                itemFromDb.setDescription(item.getDescription());
-            if (item.getAvailable() != null)
-                itemFromDb.setAvailable(item.getAvailable());
-            if (item.getRequest() != null)
-                itemFromDb.setRequest(item.getRequest());
+            Optional.ofNullable(item.getName()).ifPresent(itemFromDb::setName);
+            Optional.ofNullable(item.getDescription()).ifPresent(itemFromDb::setDescription);
+            Optional.ofNullable(item.getAvailable()).ifPresent(itemFromDb::setAvailable);
             itemFromDb.setOwner(userMapper.toUser(userService.getUserById(userId)));
             return itemMapper.toItemDto(itemRepository.save(itemFromDb));
         } else {

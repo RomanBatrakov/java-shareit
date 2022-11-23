@@ -13,6 +13,7 @@ import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,12 +52,8 @@ public class UserServiceImpl implements UserService {
         try {
             User user = userMapper.toUser(userDto);
             User userFromDb = userRepository.findById(id).get();
-            if (user.getName() != null) {
-                userFromDb.setName(user.getName());
-            }
-            if (user.getEmail() != null) {
-                userFromDb.setEmail(user.getEmail());
-            }
+            Optional.ofNullable(user.getName()).ifPresent(userFromDb::setName);
+            Optional.ofNullable(user.getEmail()).ifPresent(userFromDb::setEmail);
             return userMapper.toUserDto(userRepository.save(userFromDb));
         } catch (NoSuchElementException e) {
             throw new NotFoundException("Пользователь не найден");
