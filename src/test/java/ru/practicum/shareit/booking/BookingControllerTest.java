@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static ru.practicum.shareit.booking.BookingStatus.WAITING;
 
 @WebMvcTest(controllers = BookingController.class)
-class BookingControllerTestWithContext {
+class BookingControllerTest {
     @Autowired
     ObjectMapper mapper;
     @MockBean

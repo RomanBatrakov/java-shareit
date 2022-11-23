@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static ru.practicum.shareit.item.service.ItemTestData.commentDto;
 
 @WebMvcTest(controllers = ItemController.class)
-class ItemControllerTestWithContext {
+class ItemControllerTest {
     @Autowired
     ObjectMapper mapper;
     @MockBean
