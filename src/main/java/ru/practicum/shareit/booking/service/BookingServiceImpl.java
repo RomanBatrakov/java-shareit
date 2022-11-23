@@ -1,6 +1,8 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingMapper;
@@ -18,6 +20,7 @@ import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.booking.BookingStatus.*;
@@ -32,14 +35,14 @@ public class BookingServiceImpl implements BookingService {
     private final UserMapper userMapper;
 
     @Override
-    public BookingDto createBooking(int userId, BookingSimpleDto bookingToUserDto) {
+    public BookingDto createBooking(int userId, BookingSimpleDto bookingSimpleDto) {
         User user = userMapper.toUser(userService.getUserById(userId));
-        Item item = itemService.getItemById(bookingToUserDto.getItemId()).get();
+        Item item = itemService.getItemById(bookingSimpleDto.getItemId()).get();
         if (item.getOwner().getId() == user.getId()) throw new NotFoundException("Владелец не может бронировать");
-        if (bookingToUserDto.getStart().isBefore(bookingToUserDto.getEnd()) && item.getAvailable()) {
+        if (bookingSimpleDto.getStart().isBefore(bookingSimpleDto.getEnd()) && item.getAvailable()) {
             Booking booking = Booking.builder()
-                    .start(bookingToUserDto.getStart())
-                    .end(bookingToUserDto.getEnd())
+                    .start(bookingSimpleDto.getStart())
+                    .end(bookingSimpleDto.getEnd())
                     .item(item)
                     .booker(user)
                     .status(WAITING)
@@ -74,42 +77,44 @@ public class BookingServiceImpl implements BookingService {
             } else {
                 throw new NotFoundException("Ошибка валидации запроса");
             }
-        } catch (NotFoundException e) {
+        } catch (NoSuchElementException e) {
             throw new NotFoundException("Бронирование не найдено");
         }
     }
 
     @Override
-    public List<BookingDto> getUserBookings(int userId, String state) {
+    public List<BookingDto> getUserBookings(int userId, String state, Pageable pageable) {
         userService.getUserById(userId);
-        List<Booking> userBookings;
+        Page<Booking> userBookings;
         try {
             BookingState bookingState = BookingState.valueOf(state);
             switch (bookingState) {
                 case ALL:
-                    userBookings = bookingRepository.findByBooker_IdOrderByStartDesc(userId);
+                    userBookings = bookingRepository.findByBooker_IdOrderByStartDesc(userId, pageable);
                     break;
                 case CURRENT:
-                    userBookings = bookingRepository.findByBooker_IdAndEndAfterAndStartBeforeOrderByStartDesc(userId,
-                            LocalDateTime.now(), LocalDateTime.now());
+                    userBookings = bookingRepository.findByBooker_IdAndEndAfterAndStartBeforeOrderByStartDesc(
+                            userId, LocalDateTime.now(), LocalDateTime.now(), pageable);
                     break;
                 case PAST:
-                    userBookings = bookingRepository.findByBooker_IdAndEndBeforeOrderByStartDesc(userId, LocalDateTime.now());
+                    userBookings = bookingRepository.findByBooker_IdAndEndBeforeOrderByStartDesc(
+                            userId, LocalDateTime.now(), pageable);
                     break;
                 case FUTURE:
-                    userBookings = bookingRepository.findByBooker_IdAndStartAfterOrderByStartDesc(userId, LocalDateTime.now());
+                    userBookings = bookingRepository.findByBooker_IdAndStartAfterOrderByStartDesc(
+                            userId, LocalDateTime.now(), pageable);
                     break;
                 case WAITING:
-                    userBookings = bookingRepository.findByBooker_IdAndStatusOrderByStartDesc(userId, WAITING);
+                    userBookings = bookingRepository.findByBooker_IdAndStatusOrderByStartDesc(
+                            userId, WAITING, pageable);
                     break;
                 case REJECTED:
-                    userBookings = bookingRepository.findByBooker_IdAndStatusOrderByStartDesc(userId, REJECTED);
+                    userBookings = bookingRepository.findByBooker_IdAndStatusOrderByStartDesc(
+                            userId, REJECTED, pageable);
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown state: " + state);
             }
-        } catch (NotFoundException e) {
-            throw new NotFoundException("Бронирования не найдены");
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Unknown state: " + state);
         }
@@ -119,38 +124,38 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> getOwnerBookings(int ownerId, String state) {
+    public List<BookingDto> getOwnerBookings(int ownerId, String state, Pageable pageable) {
         userService.getUserById(ownerId);
-        List<Booking> ownerBookings;
+        Page<Booking> ownerBookings;
         try {
             BookingState bookingState = BookingState.valueOf(state);
             switch (bookingState) {
                 case ALL:
-                    ownerBookings = bookingRepository.findByItem_OwnerIdOrderByStartDesc(ownerId);
+                    ownerBookings = bookingRepository.findByItem_OwnerIdOrderByStartDesc(ownerId, pageable);
                     break;
                 case CURRENT:
-                    ownerBookings = bookingRepository.findByItem_OwnerIdAndEndAfterAndStartBeforeOrderByStartDesc(ownerId,
-                            LocalDateTime.now(), LocalDateTime.now());
+                    ownerBookings = bookingRepository.findByItem_OwnerIdAndEndAfterAndStartBeforeOrderByStartDesc(
+                            ownerId, LocalDateTime.now(), LocalDateTime.now(), pageable);
                     break;
                 case PAST:
-                    ownerBookings = bookingRepository.findByItem_OwnerIdAndEndBeforeOrderByStartDesc(ownerId,
-                            LocalDateTime.now());
+                    ownerBookings = bookingRepository.findByItem_OwnerIdAndEndBeforeOrderByStartDesc(
+                            ownerId, LocalDateTime.now(), pageable);
                     break;
                 case FUTURE:
-                    ownerBookings = bookingRepository.findByItem_OwnerIdAndStartAfterOrderByStartDesc(ownerId,
-                            LocalDateTime.now());
+                    ownerBookings = bookingRepository.findByItem_OwnerIdAndStartAfterOrderByStartDesc(
+                            ownerId, LocalDateTime.now(), pageable);
                     break;
                 case WAITING:
-                    ownerBookings = bookingRepository.findByItem_OwnerIdAndStatusOrderByStartDesc(ownerId, WAITING);
+                    ownerBookings = bookingRepository.findByItem_OwnerIdAndStatusOrderByStartDesc(
+                            ownerId, WAITING, pageable);
                     break;
                 case REJECTED:
-                    ownerBookings = bookingRepository.findByItem_OwnerIdAndStatusOrderByStartDesc(ownerId, REJECTED);
+                    ownerBookings = bookingRepository.findByItem_OwnerIdAndStatusOrderByStartDesc(
+                            ownerId, REJECTED, pageable);
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown state: " + state);
             }
-        } catch (NotFoundException e) {
-            throw new NotFoundException("Бронирования не найдены");
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Unknown state: " + state);
         }
@@ -165,9 +170,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<Booking> findByItem_IdAndBooker_IdAndStatusAndEndBefore(int itemId, int userId, BookingStatus
-            status,
-                                                                        LocalDateTime now) {
+    public List<Booking> findByItem_IdAndBooker_IdAndStatusAndEndBefore(
+            int itemId, int userId, BookingStatus status, LocalDateTime now) {
         return bookingRepository.findByItem_IdAndBooker_IdAndStatusAndEndBefore(itemId, userId, status, now);
     }
 }

@@ -1,16 +1,14 @@
 package ru.practicum.shareit.item.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import ru.practicum.shareit.user.User;
+import lombok.*;
+import ru.practicum.shareit.user.dto.UserDto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class ItemDto {
@@ -23,5 +21,6 @@ public class ItemDto {
     private String description;
     @NotNull(message = "Available is null")
     private Boolean available;
-    private User owner;
+    private UserDto owner;
+    private Integer requestId;
 }

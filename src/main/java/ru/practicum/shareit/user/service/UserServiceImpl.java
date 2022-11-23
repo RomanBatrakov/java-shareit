@@ -1,6 +1,8 @@
 package ru.practicum.shareit.user.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exeption.NotFoundException;
 import ru.practicum.shareit.exeption.ValidationException;
@@ -10,6 +12,8 @@ import ru.practicum.shareit.user.dao.UserRepository;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,7 +26,7 @@ public class UserServiceImpl implements UserService {
     public UserDto getUserById(int id) {
         try {
             return userMapper.toUserDto(userRepository.findById(id).get());
-        } catch (NotFoundException e) {
+        } catch (NoSuchElementException e) {
             throw new NotFoundException("Пользователь не найден");
         }
     }
@@ -38,7 +42,7 @@ public class UserServiceImpl implements UserService {
     public UserDto createUser(UserDto userDto) {
         try {
             return userMapper.toUserDto(userRepository.save(userMapper.toUser(userDto)));
-        } catch (NotFoundException e) {
+        } catch (DataIntegrityViolationException e) {
             throw new ValidationException("Ошибка входящих данных");
         }
     }
@@ -48,14 +52,10 @@ public class UserServiceImpl implements UserService {
         try {
             User user = userMapper.toUser(userDto);
             User userFromDb = userRepository.findById(id).get();
-            if (user.getName() != null) {
-                userFromDb.setName(user.getName());
-            }
-            if (user.getEmail() != null) {
-                userFromDb.setEmail(user.getEmail());
-            }
+            Optional.ofNullable(user.getName()).ifPresent(userFromDb::setName);
+            Optional.ofNullable(user.getEmail()).ifPresent(userFromDb::setEmail);
             return userMapper.toUserDto(userRepository.save(userFromDb));
-        } catch (NotFoundException e) {
+        } catch (NoSuchElementException e) {
             throw new NotFoundException("Пользователь не найден");
         }
     }
@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(int id) {
         try {
             userRepository.deleteById(id);
-        } catch (NotFoundException e) {
+        } catch (EmptyResultDataAccessException e) {
             throw new NotFoundException("Пользователь не найден");
         }
     }

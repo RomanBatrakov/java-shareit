@@ -10,8 +10,9 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Table(name = "requests")
 public class ItemRequest {
     @Id
@@ -21,11 +22,9 @@ public class ItemRequest {
     @NotBlank
     @Column(name = "description")
     private String description;
-    @NonNull
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "requestor_id", referencedColumnName = "id")
     private User requestor;
-    @NonNull
     @Column(name = "created")
     private LocalDateTime created;
 }
