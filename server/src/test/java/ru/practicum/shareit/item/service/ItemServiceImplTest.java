@@ -56,23 +56,23 @@ class ItemServiceImplTest {
     void setUp() {
         userService.createUser(userDto1);
         bookerDto = userService.createUser(userDto2);
-        itemDto = itemService.createItem(1, itemDto1);
+        itemDto = itemService.createItem(1L, itemDto1);
     }
 
     @Test
     void getItemByIdTest() {
-        Item itemFromSQL = itemService.getItemById(1).get();
+        Item itemFromSQL = itemService.getItemById(1L).get();
         assertThat(itemFromSQL.getName(), equalTo(itemDto1.getName()));
     }
 
     @Test
     void getItemByWrongIdTest() {
-        assertThrows(NotFoundException.class, () -> itemService.getItemById(100));
+        assertThrows(NotFoundException.class, () -> itemService.getItemById(100L));
     }
 
     @Test
     void getAllOwnerItemsTest() {
-        List<ItemWithBookingsDto> items = itemService.getAllOwnerItems(1, PageRequest.of(0, 10));
+        List<ItemWithBookingsDto> items = itemService.getAllOwnerItems(1L, PageRequest.of(0, 10));
         assertThat(items.size(), equalTo(1));
     }
 
@@ -86,27 +86,27 @@ class ItemServiceImplTest {
 
     @Test
     void createItemTest() {
-        itemService.createItem(1, itemDtoCreated);
-        List<ItemWithBookingsDto> items = itemService.getAllOwnerItems(1, PageRequest.of(0, 10));
+        itemService.createItem(1L, itemDtoCreated);
+        List<ItemWithBookingsDto> items = itemService.getAllOwnerItems(1L, PageRequest.of(0, 10));
         assertThat(items.get(1).getName(), equalTo(itemDtoCreated.getName()));
     }
 
     @Test
     void createItemWithIdTest() {
-        assertThrows(NotFoundException.class, () -> itemService.createItem(1, itemDto4));
+        assertThrows(NotFoundException.class, () -> itemService.createItem(1L, itemDto4));
     }
 
     @Test
     void updateItemTest() {
         itemDto1.setName("item1update");
-        itemService.updateItem(1, 1, itemDto1);
-        List<ItemWithBookingsDto> items = itemService.getAllOwnerItems(1, PageRequest.of(0, 10));
+        itemService.updateItem(1L, 1L, itemDto1);
+        List<ItemWithBookingsDto> items = itemService.getAllOwnerItems(1L, PageRequest.of(0, 10));
         assertThat(items.get(0).getName(), equalTo("item1update"));
     }
 
     @Test
     void updateItemWrongUserIdTest() {
-        assertThrows(NotFoundException.class, () -> itemService.updateItem(1, 2, itemDto1));
+        assertThrows(NotFoundException.class, () -> itemService.updateItem(1L, 2L, itemDto1));
     }
 
     @Test
@@ -119,14 +119,14 @@ class ItemServiceImplTest {
                 .status(BookingStatus.APPROVED)
                 .build();
         bookingRepository.save(booking);
-        itemService.createComment(1, 2, commentDto);
-        List<ItemWithBookingsDto> items = itemService.getAllOwnerItems(1, PageRequest.of(0, 10));
+        itemService.createComment(1L, 2L, commentDto);
+        List<ItemWithBookingsDto> items = itemService.getAllOwnerItems(1L, PageRequest.of(0, 10));
         assertThat(items.get(0).getComments().get(0).getText(), equalTo(commentDto.getText()));
     }
 
     @Test
     void createCommentFailTest() {
-        assertThrows(IllegalArgumentException.class, () -> itemService.createComment(1, 1, commentDto));
+        assertThrows(IllegalArgumentException.class, () -> itemService.createComment(1L, 1L, commentDto));
     }
 
     @Test
@@ -134,15 +134,15 @@ class ItemServiceImplTest {
         ItemRequestDto itemRequest1 = ItemRequestDto.builder()
                 .description("itemRequest1")
                 .build();
-        itemRequestService.createRequest(2, itemRequest1);
-        itemService.createItem(1, itemDto2);
-        List<ItemDto> items = itemService.getRequestItems(1);
+        itemRequestService.createRequest(2L, itemRequest1);
+        itemService.createItem(1L, itemDto2);
+        List<ItemDto> items = itemService.getRequestItems(1L);
         assertThat(items.size(), equalTo(1));
     }
 
     @Test
     void getItemWithBookingsById() {
-        ItemWithBookingsDto item = itemService.getItemWithBookingsById(1, 1);
+        ItemWithBookingsDto item = itemService.getItemWithBookingsById(1L, 1L);
         assertThat(item.getNextBooking(), equalTo(null));
         assertThat(item.getLastBooking(), equalTo(null));
         assertThat(item.getName(), equalTo(itemDto1.getName()));

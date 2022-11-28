@@ -41,44 +41,44 @@ public class ItemRequestServiceImplTest {
                 .description("itemRequest2")
                 .build();
         userService.createUser(userDto1);
-        itemRequestService.createRequest(1, itemRequest1);
+        itemRequestService.createRequest(1L, itemRequest1);
     }
 
     @Test
     void getAllRequestsTest() {
-        List<ItemRequestDto> itemRequestDtoFromSQL = itemRequestService.getAllRequests(1);
+        List<ItemRequestDto> itemRequestDtoFromSQL = itemRequestService.getAllRequests(1L);
         assertThat(itemRequestDtoFromSQL.size(), equalTo(1));
     }
 
     @Test
     void getAllRequestsWrongIdTest() {
-        assertThrows(NotFoundException.class, () -> itemRequestService.getAllRequests(10));
+        assertThrows(NotFoundException.class, () -> itemRequestService.getAllRequests(10L));
     }
 
     @Test
     void getRequestTest() {
-        assertThat(itemRequestService.getRequest(1, 1).getDescription(),
+        assertThat(itemRequestService.getRequest(1L, 1L).getDescription(),
                 equalTo(itemRequest1.getDescription()));
     }
 
     @Test
     void getRequestWrongIdTest() {
-        assertThrows(NotFoundException.class, () -> itemRequestService.getRequest(1, 2));
+        assertThrows(NotFoundException.class, () -> itemRequestService.getRequest(1L, 2L));
     }
 
     @Test
     void getAllUsersRequests() {
         userService.createUser(userDto2);
         itemRequestService.createRequest(2, itemRequest2);
-        List<ItemRequestDto> itemRequestDtoFromSQL = itemRequestService.getAllUsersRequests(2,
+        List<ItemRequestDto> itemRequestDtoFromSQL = itemRequestService.getAllUsersRequests(2L,
                 PageRequest.of(0, 10));
         assertThat(itemRequestDtoFromSQL.size(), equalTo(1));
     }
 
     @Test
     void createRequest() {
-        itemRequestService.createRequest(1, itemRequest2);
-        List<ItemRequestDto> itemRequestDtoFromSQL = itemRequestService.getAllRequests(1);
+        itemRequestService.createRequest(1L, itemRequest2);
+        List<ItemRequestDto> itemRequestDtoFromSQL = itemRequestService.getAllRequests(1L);
         assertThat(itemRequestDtoFromSQL.get(1).getDescription(), equalTo(itemRequest2.getDescription()));
         assertThat(itemRequestDtoFromSQL.get(1).getItems().size(), equalTo(0));
     }

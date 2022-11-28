@@ -37,20 +37,20 @@ class UserControllerTest {
     @BeforeEach
     void setUp() {
         userDto = new UserDto(
-                1,
+                1L,
                 "John",
                 "john.doe@mail.com");
     }
 
     @Test
     void getUserById() throws Exception {
-        when(userService.getUserById(anyInt()))
+        when(userService.getUserById(anyLong()))
                 .thenReturn(userDto);
 
-        mvc.perform(get("/users/{id}", 1)
+        mvc.perform(get("/users/{id}", 1L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(userDto.getId())))
+                .andExpect(jsonPath("$.id", is((int) userDto.getId())))
                 .andExpect(jsonPath("$.name", is(userDto.getName())))
                 .andExpect(jsonPath("$.email", is(userDto.getEmail())));
     }
@@ -64,7 +64,7 @@ class UserControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].id", is(userDto.getId())))
+                .andExpect(jsonPath("$[0].id", is((int) userDto.getId())))
                 .andExpect(jsonPath("$[0].name", is(userDto.getName())))
                 .andExpect(jsonPath("$[0].email", is(userDto.getEmail())));
     }
@@ -80,7 +80,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(userDto.getId())))
+                .andExpect(jsonPath("$.id", is((int) userDto.getId())))
                 .andExpect(jsonPath("$.name", is(userDto.getName())))
                 .andExpect(jsonPath("$.email", is(userDto.getEmail())));
     }
@@ -101,23 +101,23 @@ class UserControllerTest {
 
     @Test
     void updateUser() throws Exception {
-        when(userService.updateUser(anyInt(), any()))
+        when(userService.updateUser(anyLong(), any()))
                 .thenReturn(userDto);
 
-        mvc.perform(patch("/users/{id}", 1)
+        mvc.perform(patch("/users/{id}", 1L)
                         .content(mapper.writeValueAsString(userDto))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(userDto.getId())))
+                .andExpect(jsonPath("$.id", is((int) userDto.getId())))
                 .andExpect(jsonPath("$.name", is(userDto.getName())))
                 .andExpect(jsonPath("$.email", is(userDto.getEmail())));
     }
 
     @Test
     void deleteUser() throws Exception {
-        mvc.perform(delete("/users/{id}", 1)
+        mvc.perform(delete("/users/{id}", 1L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

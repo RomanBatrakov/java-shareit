@@ -57,15 +57,15 @@ class BookingServiceImplTest {
         userService.createUser(userDto1);
         bookerDto = userService.createUser(userDto2);
         userService.createUser(userDto3);
-        itemDto = itemService.createItem(1, itemDto1);
-        bookingService.createBooking(2, bookingSimpleDto1);
+        itemDto = itemService.createItem(1L, itemDto1);
+        bookingService.createBooking(2L, bookingSimpleDto1);
     }
 
     @Test
     void createBookingTest() {
-        bookingService.createBooking(2, createdDto);
+        bookingService.createBooking(2L, createdDto);
         List<BookingDto> bookings = bookingService.getUserBookings(
-                2, "WAITING", PageRequest.of(0, 10));
+                2L, "WAITING", PageRequest.of(0, 10));
         assertThat(bookings.size(), equalTo(2));
     }
 
@@ -73,56 +73,56 @@ class BookingServiceImplTest {
     void createBookingWrongDateTest() {
         RuntimeException ex = Assertions.assertThrows(
                 IllegalArgumentException.class,
-                () -> bookingService.createBooking(2, createdWrongDto));
+                () -> bookingService.createBooking(2L, createdWrongDto));
         assertEquals("Ошибка входящих данных", ex.getMessage());
     }
 
     @Test
     void updateBookingTest() {
-        bookingService.updateBooking(1, 1, false);
+        bookingService.updateBooking(1L, 1L, false);
         List<BookingDto> userBookings = bookingService.getUserBookings(
-                2, "REJECTED", PageRequest.of(0, 10));
+                2L, "REJECTED", PageRequest.of(0, 10));
         assertThat(userBookings.size(), equalTo(1));
         List<BookingDto> ownerBookings = bookingService.getOwnerBookings(
-                1, "REJECTED", PageRequest.of(0, 10));
+                1L, "REJECTED", PageRequest.of(0, 10));
         assertThat(ownerBookings.size(), equalTo(1));
     }
 
     @Test
     void updateBookingWrongUserTest() {
-        assertThrows(NotFoundException.class, () -> bookingService.updateBooking(1, 2, false));
+        assertThrows(NotFoundException.class, () -> bookingService.updateBooking(1L, 2L, false));
     }
 
     @Test
     void updateBookingAlreadyApprovedTest() {
-        bookingService.updateBooking(1, 1, true);
+        bookingService.updateBooking(1L, 1L, true);
         assertThrows(IllegalArgumentException.class, () -> bookingService.updateBooking(
-                1, 1, true));
+                1L, 1L, true));
     }
 
     @Test
     void getBookingById() {
-        bookingService.createBooking(2, createdDto);
+        bookingService.createBooking(2L, createdDto);
         List<BookingDto> bookings = bookingService.getUserBookings(
-                2, "ALL", PageRequest.of(0, 10));
+                2L, "ALL", PageRequest.of(0, 10));
         assertThat(bookings.size(), equalTo(2));
     }
 
     @Test
     void getBookingByWrongBookingIdTest() {
-        assertThrows(NotFoundException.class, () -> bookingService.getBookingById(2, 10));
+        assertThrows(NotFoundException.class, () -> bookingService.getBookingById(2L, 10L));
     }
 
     @Test
     void getBookingByWrongUserIdTest() {
-        assertThrows(NotFoundException.class, () -> bookingService.getBookingById(3, 1));
+        assertThrows(NotFoundException.class, () -> bookingService.getBookingById(3L, 1L));
     }
 
     @Test
     void getUserBookingsTest() {
-        bookingService.createBooking(2, createdDto);
+        bookingService.createBooking(2L, createdDto);
         List<BookingDto> bookings = bookingService.getUserBookings(
-                2, "ALL", PageRequest.of(0, 10));
+                2L, "ALL", PageRequest.of(0, 10));
         assertThat(bookings.get(0).getEnd().toString(), equalTo(createdDto.getEnd().toString()));
     }
 
@@ -131,26 +131,26 @@ class BookingServiceImplTest {
         String state = "WRONG";
         RuntimeException ex = Assertions.assertThrows(
                 IllegalArgumentException.class,
-                () -> bookingService.getUserBookings(2, state, PageRequest.of(0, 10)));
+                () -> bookingService.getUserBookings(2L, state, PageRequest.of(0, 10)));
         assertEquals("Unknown state: " + state, ex.getMessage());
     }
 
     @Test
     void getDiffStatusUserBookingsTest() {
-        bookingService.createBooking(2, createdDto);
+        bookingService.createBooking(2L, createdDto);
         List<BookingDto> waitingBookings = bookingService.getUserBookings(
-                2, "WAITING", PageRequest.of(0, 10));
+                2L, "WAITING", PageRequest.of(0, 10));
         assertThat(waitingBookings.size(), equalTo(2));
 
-        bookingService.updateBooking(2, 1, true);
+        bookingService.updateBooking(2L, 1L, true);
         List<BookingDto> futureBookings = bookingService.getUserBookings(
-                2, "FUTURE", PageRequest.of(0, 10));
+                2L, "FUTURE", PageRequest.of(0, 10));
         assertThat(futureBookings.size(), equalTo(2));
 
-        bookingService.createBooking(2, bookingSimpleDto2);
-        bookingService.updateBooking(3, 1, true);
+        bookingService.createBooking(2L, bookingSimpleDto2);
+        bookingService.updateBooking(3L, 1L, true);
         List<BookingDto> currentBookings = bookingService.getUserBookings(
-                2, "CURRENT", PageRequest.of(0, 10));
+                2L, "CURRENT", PageRequest.of(0, 10));
         assertThat(currentBookings.size(), equalTo(1));
     }
 
@@ -175,7 +175,7 @@ class BookingServiceImplTest {
     @Test
     void getOwnerBookingsTest() {
         List<BookingDto> bookings = bookingService.getOwnerBookings(
-                1, "ALL", PageRequest.of(0, 10));
+                1L, "ALL", PageRequest.of(0, 10));
         assertThat(bookings.size(), equalTo(1));
     }
 
@@ -184,24 +184,24 @@ class BookingServiceImplTest {
         String state = "WRONG";
         RuntimeException ex = Assertions.assertThrows(
                 IllegalArgumentException.class,
-                () -> bookingService.getOwnerBookings(2, state, PageRequest.of(0, 10)));
+                () -> bookingService.getOwnerBookings(2L, state, PageRequest.of(0, 10)));
         assertEquals("Unknown state: " + state, ex.getMessage());
     }
 
     @Test
     void getDiffStatusOwnerBookingsTest() {
-        bookingService.createBooking(2, createdDto);
+        bookingService.createBooking(2L, createdDto);
         List<BookingDto> waitingBookings = bookingService.getOwnerBookings(
-                1, "WAITING", PageRequest.of(0, 10));
+                1L, "WAITING", PageRequest.of(0, 10));
         assertThat(waitingBookings.size(), equalTo(2));
 
-        bookingService.updateBooking(2, 1, true);
+        bookingService.updateBooking(2L, 1L, true);
         List<BookingDto> futureBookings = bookingService.getOwnerBookings(
-                1, "FUTURE", PageRequest.of(0, 10));
+                1L, "FUTURE", PageRequest.of(0, 10));
         assertThat(futureBookings.size(), equalTo(2));
 
-        bookingService.createBooking(2, bookingSimpleDto2);
-        bookingService.updateBooking(3, 1, true);
+        bookingService.createBooking(2L, bookingSimpleDto2);
+        bookingService.updateBooking(3L, 1L, true);
         List<BookingDto> currentBookings = bookingService.getOwnerBookings(
                 1, "CURRENT", PageRequest.of(0, 10));
         assertThat(currentBookings.size(), equalTo(1));

@@ -35,13 +35,13 @@ class UserServiceImplTest {
 
     @Test
     void getUserByIdTest() {
-        UserDto userDtoFromSQL = userService.getUserById(1);
+        UserDto userDtoFromSQL = userService.getUserById(1L);
         assertThat(userDtoFromSQL.getName(), equalTo(userDto1.getName()));
     }
 
     @Test
     void getUserByWrongIdTest() {
-        assertThrows(NotFoundException.class, () -> userService.getUserById(100));
+        assertThrows(NotFoundException.class, () -> userService.getUserById(100L));
     }
 
     @Test
@@ -69,7 +69,7 @@ class UserServiceImplTest {
     void updateUserTest() {
         userDto2.setName("User2new");
         userDto2.setEmail("User2new@mail.ru");
-        UserDto userDtoFromSQL = userService.updateUser(2, userDto2);
+        UserDto userDtoFromSQL = userService.updateUser(2L, userDto2);
         assertThat(userDtoFromSQL.getName(), equalTo(userDto2.getName()));
         assertThat(userDtoFromSQL.getEmail(), equalTo(userDto2.getEmail()));
         userDto2.setName("user2");
@@ -78,17 +78,17 @@ class UserServiceImplTest {
 
     @Test
     void updateUserTestWhenNotFound() {
-        assertThrows(NotFoundException.class, () -> userService.updateUser(20, userDto2));
+        assertThrows(NotFoundException.class, () -> userService.updateUser(20L, userDto2));
     }
 
     @Test
     void deleteUserTest() {
-        userService.deleteUser(1);
+        userService.deleteUser(1L);
         assertThat(userService.getAllUsers().size(), equalTo(2));
     }
 
     @Test
     void deleteUserWrongIdTest() {
-        assertThrows(NotFoundException.class, () -> userService.deleteUser(100));
+        assertThrows(NotFoundException.class, () -> userService.deleteUser(100L));
     }
 }

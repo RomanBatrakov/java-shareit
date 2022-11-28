@@ -41,11 +41,11 @@ class BookingControllerTest {
 
     @BeforeEach
     void setUp() {
-        UserDto booker = new UserDto(1, "John", "john.doe@mail.com");
-        UserDto owner = new UserDto(2, "John2", "john2.doe@mail.com");
-        ItemDto item = new ItemDto(1, "Item", "description", true, owner, 1);
+        UserDto booker = new UserDto(1L, "John", "john.doe@mail.com");
+        UserDto owner = new UserDto(2L, "John2", "john2.doe@mail.com");
+        ItemDto item = new ItemDto(1L, "Item", "description", true, owner, 1L);
         bookingDto = BookingDto.builder()
-                .id(1)
+                .id(1L)
                 .start(LocalDateTime.of(2022, 11, 30, 1, 1, 1))
                 .end(LocalDateTime.of(2022, 12, 30, 1, 1, 1))
                 .item(item)
@@ -53,123 +53,123 @@ class BookingControllerTest {
                 .status(WAITING)
                 .build();
         bookingSimpleDto = BookingSimpleDto.builder()
-                .id(1)
+                .id(1L)
                 .start(LocalDateTime.of(2022, 11, 30, 1, 1, 1))
                 .end(LocalDateTime.of(2022, 12, 30, 1, 1, 1))
-                .itemId(1)
+                .itemId(1L)
                 .build();
     }
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void createBooking() throws Exception {
-        when(bookingService.createBooking(anyInt(), any()))
+        when(bookingService.createBooking(anyLong(), any()))
                 .thenReturn(bookingDto);
 
         mvc.perform(post("/bookings")
-                        .header("X-Sharer-User-Id", 1)
+                        .header("X-Sharer-User-Id", 1L)
                         .content(mapper.writeValueAsString(bookingSimpleDto))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(bookingDto.getId())))
+                .andExpect(jsonPath("$.id", is((int) bookingDto.getId())))
                 .andExpect(jsonPath("$.start", is(bookingDto.getStart().toString())))
                 .andExpect(jsonPath("$.end", is(bookingDto.getEnd().toString())))
                 .andExpect(jsonPath("$.item.name", is(bookingDto.getItem().getName())))
                 .andExpect(jsonPath("$.booker.name", is(bookingDto.getBooker().getName())))
                 .andExpect(jsonPath("$.status", is(bookingDto.getStatus().toString())));
-        verify(bookingService).createBooking(anyInt(), any());
+        verify(bookingService).createBooking(anyLong(), any());
     }
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void updateBooking() throws Exception {
-        when(bookingService.updateBooking(anyInt(), anyInt(), anyBoolean()))
+        when(bookingService.updateBooking(anyLong(), anyLong(), anyBoolean()))
                 .thenReturn(bookingDto);
 
-        mvc.perform(patch("/bookings/{bookingId}", 1)
+        mvc.perform(patch("/bookings/{bookingId}", 1L)
                         .param("approved", String.valueOf(true))
-                        .header("X-Sharer-User-Id", 1)
+                        .header("X-Sharer-User-Id", 1L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(bookingDto.getId())))
+                .andExpect(jsonPath("$.id", is((int) bookingDto.getId())))
                 .andExpect(jsonPath("$.start", is(bookingDto.getStart().toString())))
                 .andExpect(jsonPath("$.end", is(bookingDto.getEnd().toString())))
                 .andExpect(jsonPath("$.item.name", is(bookingDto.getItem().getName())))
                 .andExpect(jsonPath("$.booker.name", is(bookingDto.getBooker().getName())))
                 .andExpect(jsonPath("$.status", is(bookingDto.getStatus().toString())));
-        verify(bookingService).updateBooking(anyInt(), anyInt(), anyBoolean());
+        verify(bookingService).updateBooking(anyLong(), anyLong(), anyBoolean());
     }
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void getBookingById() throws Exception {
-        when(bookingService.getBookingById(anyInt(), anyInt()))
+        when(bookingService.getBookingById(anyLong(), anyLong()))
                 .thenReturn(bookingDto);
 
-        mvc.perform(get("/bookings/{bookingId}", 1)
-                        .header("X-Sharer-User-Id", 1)
+        mvc.perform(get("/bookings/{bookingId}", 1L)
+                        .header("X-Sharer-User-Id", 1L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(bookingDto.getId())))
+                .andExpect(jsonPath("$.id", is((int) bookingDto.getId())))
                 .andExpect(jsonPath("$.start", is(bookingDto.getStart().toString())))
                 .andExpect(jsonPath("$.end", is(bookingDto.getEnd().toString())))
                 .andExpect(jsonPath("$.item.name", is(bookingDto.getItem().getName())))
                 .andExpect(jsonPath("$.booker.name", is(bookingDto.getBooker().getName())))
                 .andExpect(jsonPath("$.status", is(bookingDto.getStatus().toString())));
-        verify(bookingService).getBookingById(anyInt(), anyInt());
+        verify(bookingService).getBookingById(anyLong(), anyLong());
     }
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void getUserBookings() throws Exception {
-        when(bookingService.getUserBookings(anyInt(), anyString(), any()))
+        when(bookingService.getUserBookings(anyLong(), anyString(), any()))
                 .thenReturn(List.of(bookingDto));
 
         mvc.perform(get("/bookings")
-                        .header("X-Sharer-User-Id", 1)
+                        .header("X-Sharer-User-Id", 1L)
                         .param("state", "ALL")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].id", is(bookingDto.getId())))
+                .andExpect(jsonPath("$[0].id", is((int) bookingDto.getId())))
                 .andExpect(jsonPath("$[0].start", is(bookingDto.getStart().toString())))
                 .andExpect(jsonPath("$[0].end", is(bookingDto.getEnd().toString())))
                 .andExpect(jsonPath("$[0].item.name", is(bookingDto.getItem().getName())))
                 .andExpect(jsonPath("$[0].booker.name", is(bookingDto.getBooker().getName())))
                 .andExpect(jsonPath("$[0].status", is(bookingDto.getStatus().toString())));
-        verify(bookingService).getUserBookings(anyInt(), anyString(), any());
+        verify(bookingService).getUserBookings(anyLong(), anyString(), any());
     }
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void getOwnerBookings() throws Exception {
-        when(bookingService.getOwnerBookings(anyInt(), anyString(), any()))
+        when(bookingService.getOwnerBookings(anyLong(), anyString(), any()))
                 .thenReturn(List.of(bookingDto));
 
         mvc.perform(get("/bookings/owner")
-                        .header("X-Sharer-User-Id", 1)
+                        .header("X-Sharer-User-Id", 1L)
                         .param("state", "ALL")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].id", is(bookingDto.getId())))
+                .andExpect(jsonPath("$[0].id", is((int) bookingDto.getId())))
                 .andExpect(jsonPath("$[0].start", is(bookingDto.getStart().toString())))
                 .andExpect(jsonPath("$[0].end", is(bookingDto.getEnd().toString())))
                 .andExpect(jsonPath("$[0].item.name", is(bookingDto.getItem().getName())))
                 .andExpect(jsonPath("$[0].booker.name", is(bookingDto.getBooker().getName())))
                 .andExpect(jsonPath("$[0].status", is(bookingDto.getStatus().toString())));
-        verify(bookingService).getOwnerBookings(anyInt(), anyString(), any());
+        verify(bookingService).getOwnerBookings(anyLong(), anyString(), any());
     }
 
     @Test
     void getOwnerBookingsError() throws Exception {
-        when(bookingService.getOwnerBookings(anyInt(), eq("ALL"), any()))
+        when(bookingService.getOwnerBookings(anyLong(), eq("ALL"), any()))
                 .thenThrow(IllegalArgumentException.class);
 
         mvc.perform(get("/bookings/owner")
-                        .header("X-Sharer-User-Id", 1)
+                        .header("X-Sharer-User-Id", 1L)
                         .param("state", "ALL")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError())
