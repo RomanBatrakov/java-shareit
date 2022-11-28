@@ -7,6 +7,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 class ShareItServerTest {
 
     @Test
-    void main() {
+    void contextLoads() {
     }
 }
