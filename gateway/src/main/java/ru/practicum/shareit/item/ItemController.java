@@ -72,6 +72,6 @@ public class ItemController {
                                                 @PathVariable long itemId,
                                                 @RequestBody @Valid CommentDto commentDto) {
         log.info("Creating comment {}, userId={}, itemId={}", commentDto, userId, itemId);
-        return itemClient.createComment(itemId, userId, commentDto);
+        return itemClient.createComment(userId, itemId, commentDto);
     }
 }

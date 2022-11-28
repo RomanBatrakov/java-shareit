@@ -61,7 +61,7 @@ public class BookingController {
         return bookingClient.getUserBookings(userId, state, from, size);
     }
 
-    @GetMapping
+    @GetMapping("/owner")
     public ResponseEntity<Object> getOwnerBookings(@RequestHeader(HEADER_USER_ID) long ownerId,
                                                    @RequestParam(name = "state", required = false,
                                                            defaultValue = "ALL") String stateParam,
