@@ -22,35 +22,35 @@ import java.util.List;
 public class ItemController {
     private final ItemService service;
 
-    @GetMapping("/{itemId}")
-    public ResponseEntity<ItemWithBookingsDto> getItemWithBookingsById(@RequestHeader("X-Sharer-User-Id") int userId,
-                                                                       @PathVariable int itemId) {
-        return ResponseEntity.ok(service.getItemWithBookingsById(userId, itemId));
-    }
+//    @GetMapping("/{itemId}")
+//    public ResponseEntity<ItemWithBookingsDto> getItemWithBookingsById(@RequestHeader("X-Sharer-User-Id") int userId,
+//                                                                       @PathVariable int itemId) {
+//        return ResponseEntity.ok(service.getItemWithBookingsById(userId, itemId));
+//    }
 
-    @GetMapping
-    public ResponseEntity<List<ItemWithBookingsDto>> getAllOwnerItems(@RequestHeader("X-Sharer-User-Id") int userId,
-                                                                      @PositiveOrZero @RequestParam(required = false,
-                                                                              defaultValue = "0") int from,
-                                                                      @Positive @RequestParam(required = false,
-                                                                              defaultValue = "10") int size) {
-        return ResponseEntity.ok(service.getAllOwnerItems(userId, PageRequest.of((from / size), size)));
-    }
+//    @GetMapping
+//    public ResponseEntity<List<ItemWithBookingsDto>> getAllOwnerItems(@RequestHeader("X-Sharer-User-Id") int userId,
+//                                                                      @PositiveOrZero @RequestParam(required = false,
+//                                                                              defaultValue = "0") int from,
+//                                                                      @Positive @RequestParam(required = false,
+//                                                                              defaultValue = "10") int size) {
+//        return ResponseEntity.ok(service.getAllOwnerItems(userId, PageRequest.of((from / size), size)));
+//    }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<ItemDto>> search(@RequestParam String text,
-                                                @PositiveOrZero @RequestParam(
-                                                        required = false, defaultValue = "0") int from,
-                                                @Positive @RequestParam(
-                                                        required = false, defaultValue = "10") int size) {
-        return ResponseEntity.ok(service.search(text, PageRequest.of((from / size), size)));
-    }
+//    @GetMapping("/search")
+//    public ResponseEntity<List<ItemDto>> search(@RequestParam String text,
+//                                                @PositiveOrZero @RequestParam(
+//                                                        required = false, defaultValue = "0") int from,
+//                                                @Positive @RequestParam(
+//                                                        required = false, defaultValue = "10") int size) {
+//        return ResponseEntity.ok(service.search(text, PageRequest.of((from / size), size)));
+//    }
 
-    @PostMapping
-    public ResponseEntity<ItemDto> createItem(@RequestHeader("X-Sharer-User-Id") int userId,
-                                              @Valid @RequestBody ItemDto itemDto) {
-        return ResponseEntity.ok(service.createItem(userId, itemDto));
-    }
+//    @PostMapping
+//    public ResponseEntity<ItemDto> createItem(@RequestHeader("X-Sharer-User-Id") int userId,
+//                                              @Valid @RequestBody ItemDto itemDto) {
+//        return ResponseEntity.ok(service.createItem(userId, itemDto));
+//    }
 
     @PostMapping("/{itemId}/comment")
     public ResponseEntity<CommentDto> createComment(@PathVariable int itemId,
@@ -59,10 +59,10 @@ public class ItemController {
         return ResponseEntity.ok(service.createComment(itemId, userId, commentDto));
     }
 
-    @PatchMapping("/{itemId}")
-    public ResponseEntity<ItemDto> updateItem(@PathVariable int itemId,
-                                              @RequestHeader("X-Sharer-User-Id") int userId,
-                                              @RequestBody ItemDto itemDto) {
-        return ResponseEntity.ok(service.updateItem(itemId, userId, itemDto));
-    }
+//    @PatchMapping("/{itemId}")
+//    public ResponseEntity<ItemDto> updateItem(@PathVariable int itemId,
+//                                              @RequestHeader("X-Sharer-User-Id") int userId,
+//                                              @RequestBody ItemDto itemDto) {
+//        return ResponseEntity.ok(service.updateItem(itemId, userId, itemDto));
+//    }
 }
