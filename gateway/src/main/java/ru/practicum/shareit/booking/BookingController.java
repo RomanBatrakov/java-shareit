@@ -37,7 +37,7 @@ public class BookingController {
                                                 @PathVariable long bookingId,
                                                 @RequestParam Boolean approved) {
         log.info("Updating booking {}, userId={}, approved={}", bookingId, userId, approved);
-        return bookingClient.updateBooking(bookingId, userId, approved);
+        return bookingClient.updateBooking(userId, bookingId, approved);
     }
 
     @GetMapping("/{bookingId}")
