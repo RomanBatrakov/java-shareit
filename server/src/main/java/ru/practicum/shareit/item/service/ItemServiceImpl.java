@@ -56,7 +56,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Optional<Item> getItemById(int itemId) {
+    public Optional<Item> getItemById(long itemId) {
         Optional<Item> item = itemRepository.findById(itemId);
         if (item.isPresent()) {
             return item;
@@ -66,7 +66,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemWithBookingsDto> getAllOwnerItems(int userId, Pageable pageable) {
+    public List<ItemWithBookingsDto> getAllOwnerItems(long userId, Pageable pageable) {
         return itemRepository.findByOwner_Id(userId, pageable).stream()
                 .map(x -> itemConverter(userId, x))
                 .collect(Collectors.toList());
@@ -85,7 +85,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto createItem(int userId, ItemDto itemDto) {
+    public ItemDto createItem(long userId, ItemDto itemDto) {
         ItemRequest itemRequest = null;
         Item item = itemMapper.toItem(itemDto);
         if (itemDto.getRequestId() != null) {
@@ -103,7 +103,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto updateItem(int itemId, int userId, ItemDto itemDto) {
+    public ItemDto updateItem(long itemId, long userId, ItemDto itemDto) {
         Item item = itemMapper.toItem(itemDto);
         Item itemFromDb = getItemById(itemId).get();
         if (itemFromDb.getOwner().getId() == userId) {
@@ -118,7 +118,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemWithBookingsDto itemConverter(int userId, Item item) {
+    public ItemWithBookingsDto itemConverter(long userId, Item item) {
         List<Booking> itemBookings = bookingService.getAllItemBookings(item.getId());
         ItemWithBookingsDto itemWithBookingsDto = itemMapper.toItemWithBookingsDto(item);
         itemWithBookingsDto.setLastBooking(findLastBooking(userId, item, itemBookings));
@@ -128,7 +128,7 @@ public class ItemServiceImpl implements ItemService {
         return itemWithBookingsDto;
     }
 
-    private BookingSimpleDto findNextBooking(int userId, Item item, List<Booking> itemBookings) {
+    private BookingSimpleDto findNextBooking(long userId, Item item, List<Booking> itemBookings) {
         List<Booking> nextBookings = itemBookings.stream()
                 .filter(x -> x.getStart().isAfter(LocalDateTime.now()))
                 .collect(Collectors.toList());
@@ -136,14 +136,14 @@ public class ItemServiceImpl implements ItemService {
         return getBookingSimpleDto(userId, item, nextBookings);
     }
 
-    private BookingSimpleDto findLastBooking(int userId, Item item, List<Booking> itemBookings) {
+    private BookingSimpleDto findLastBooking(long userId, Item item, List<Booking> itemBookings) {
         List<Booking> lastBookings = itemBookings.stream()
                 .filter(x -> x.getEnd().isBefore(LocalDateTime.now()))
                 .collect(Collectors.toList());
         return getBookingSimpleDto(userId, item, lastBookings);
     }
 
-    private BookingSimpleDto getBookingSimpleDto(int userId, Item item, List<Booking> bookingLists) {
+    private BookingSimpleDto getBookingSimpleDto(long userId, Item item, List<Booking> bookingLists) {
         BookingSimpleDto booking = null;
         if (!bookingLists.isEmpty() && item.getOwner().getId() == userId) {
             booking = bookingMapper.toBookingSimpleDto(bookingLists.get(0));
@@ -164,7 +164,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public CommentDto createComment(int itemId, int userId, CommentDto commentDto) {
+    public CommentDto createComment(long itemId, long userId, CommentDto commentDto) {
         Item item = getItemById(itemId).get();
         User user = userMapper.toUser(userService.getUserById(userId));
         if (!bookingService.findByItem_IdAndBooker_IdAndStatusAndEndBefore(itemId,
@@ -182,7 +182,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getRequestItems(int requestId) {
+    public List<ItemDto> getRequestItems(long requestId) {
         return itemRepository.findByRequest_Id(requestId).stream()
                 .map(itemMapper::toItemDto)
                 .peek(x -> x.setRequestId(requestId))
@@ -190,7 +190,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemWithBookingsDto getItemWithBookingsById(int userId, int itemId) {
+    public ItemWithBookingsDto getItemWithBookingsById(long userId, long itemId) {
         return itemConverter(userId, getItemById(itemId).get());
     }
 }

@@ -22,18 +22,18 @@ public class ItemRequestController {
     private static final String HEADER_USER_ID = "X-Sharer-User-Id";
 
     @GetMapping
-    public ResponseEntity<List<ItemRequestDto>> getAllRequests(@RequestHeader(HEADER_USER_ID) int userId) {
+    public ResponseEntity<List<ItemRequestDto>> getAllRequests(@RequestHeader(HEADER_USER_ID) long userId) {
         return ResponseEntity.ok(service.getAllRequests(userId));
     }
 
     @GetMapping("/{requestId}")
-    public ResponseEntity<ItemRequestDto> getRequest(@RequestHeader(HEADER_USER_ID) int userId,
-                                                     @PathVariable int requestId) {
+    public ResponseEntity<ItemRequestDto> getRequest(@RequestHeader(HEADER_USER_ID) long userId,
+                                                     @PathVariable long requestId) {
         return ResponseEntity.ok(service.getRequest(userId, requestId));
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<ItemRequestDto>> getAllUsersRequests(@RequestHeader(HEADER_USER_ID) int userId,
+    public ResponseEntity<List<ItemRequestDto>> getAllUsersRequests(@RequestHeader(HEADER_USER_ID) long userId,
                                                                     @RequestParam(required = false,
                                                                             defaultValue = "0") int from,
                                                                     @RequestParam(required = false,
@@ -42,7 +42,7 @@ public class ItemRequestController {
     }
 
     @PostMapping
-    public ResponseEntity<ItemRequestDto> createRequest(@RequestHeader(HEADER_USER_ID) int userId,
+    public ResponseEntity<ItemRequestDto> createRequest(@RequestHeader(HEADER_USER_ID) long userId,
                                                         @RequestBody ItemRequestDto itemRequestDto) {
         return ResponseEntity.ok(service.createRequest(userId, itemRequestDto));
     }

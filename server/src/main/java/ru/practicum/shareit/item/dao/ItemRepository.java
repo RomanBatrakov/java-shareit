@@ -9,11 +9,11 @@ import ru.practicum.shareit.item.model.Item;
 import java.util.List;
 
 @Repository
-public interface ItemRepository extends PagingAndSortingRepository<Item, Integer> {
-    Page<Item> findByOwner_Id(int userId, Pageable pageable);
+public interface ItemRepository extends PagingAndSortingRepository<Item, Long> {
+    Page<Item> findByOwner_Id(long userId, Pageable pageable);
 
     Page<Item> findByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(
             String name, String description, Pageable pageable);
 
-    List<Item> findByRequest_Id(int requestId);
+    List<Item> findByRequest_Id(long requestId);
 }

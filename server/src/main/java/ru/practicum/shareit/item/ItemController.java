@@ -20,13 +20,13 @@ public class ItemController {
 
 
     @GetMapping("/{itemId}")
-    public ResponseEntity<ItemWithBookingsDto> getItemWithBookingsById(@RequestHeader(HEADER_USER_ID) int userId,
-                                                                       @PathVariable int itemId) {
+    public ResponseEntity<ItemWithBookingsDto> getItemWithBookingsById(@RequestHeader(HEADER_USER_ID) long userId,
+                                                                       @PathVariable long itemId) {
         return ResponseEntity.ok(service.getItemWithBookingsById(userId, itemId));
     }
 
     @GetMapping
-    public ResponseEntity<List<ItemWithBookingsDto>> getAllOwnerItems(@RequestHeader(HEADER_USER_ID) int userId,
+    public ResponseEntity<List<ItemWithBookingsDto>> getAllOwnerItems(@RequestHeader(HEADER_USER_ID) long userId,
                                                                       @RequestParam(required = false,
                                                                               defaultValue = "0") int from,
                                                                       @RequestParam(required = false,
@@ -42,21 +42,21 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<ItemDto> createItem(@RequestHeader(HEADER_USER_ID) int userId,
+    public ResponseEntity<ItemDto> createItem(@RequestHeader(HEADER_USER_ID) long userId,
                                               @RequestBody ItemDto itemDto) {
         return ResponseEntity.ok(service.createItem(userId, itemDto));
     }
 
     @PostMapping("/{itemId}/comment")
-    public ResponseEntity<CommentDto> createComment(@PathVariable int itemId,
-                                                    @RequestHeader(HEADER_USER_ID) int userId,
+    public ResponseEntity<CommentDto> createComment(@PathVariable long itemId,
+                                                    @RequestHeader(HEADER_USER_ID) long userId,
                                                     @RequestBody CommentDto commentDto) {
         return ResponseEntity.ok(service.createComment(itemId, userId, commentDto));
     }
 
     @PatchMapping("/{itemId}")
-    public ResponseEntity<ItemDto> updateItem(@PathVariable int itemId,
-                                              @RequestHeader(HEADER_USER_ID) int userId,
+    public ResponseEntity<ItemDto> updateItem(@PathVariable long itemId,
+                                              @RequestHeader(HEADER_USER_ID) long userId,
                                               @RequestBody ItemDto itemDto) {
         return ResponseEntity.ok(service.updateItem(itemId, userId, itemDto));
     }

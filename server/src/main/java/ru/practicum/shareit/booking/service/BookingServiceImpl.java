@@ -35,7 +35,7 @@ public class BookingServiceImpl implements BookingService {
     private final UserMapper userMapper;
 
     @Override
-    public BookingDto createBooking(int userId, BookingSimpleDto bookingSimpleDto) {
+    public BookingDto createBooking(long userId, BookingSimpleDto bookingSimpleDto) {
         User user = userMapper.toUser(userService.getUserById(userId));
         Item item = itemService.getItemById(bookingSimpleDto.getItemId()).get();
         if (item.getOwner().getId() == user.getId()) throw new NotFoundException("Владелец не может бронировать");
@@ -54,7 +54,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingDto updateBooking(int bookingId, int userId, Boolean approved) {
+    public BookingDto updateBooking(long bookingId, long userId, Boolean approved) {
         userService.getUserById(userId);
         Booking booking = bookingMapper.toBooking(getBookingById(userId, bookingId));
         if (booking.getStatus().equals(APPROVED)) throw new IllegalArgumentException("Бронирование уже подтверждено");
@@ -68,7 +68,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingDto getBookingById(int userId, int bookingId) {
+    public BookingDto getBookingById(long userId, long bookingId) {
         userService.getUserById(userId);
         try {
             Booking booking = bookingRepository.findById(bookingId).get();
@@ -83,7 +83,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> getUserBookings(int userId, String state, Pageable pageable) {
+    public List<BookingDto> getUserBookings(long userId, String state, Pageable pageable) {
         userService.getUserById(userId);
         Page<Booking> userBookings;
         try {
@@ -124,7 +124,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> getOwnerBookings(int ownerId, String state, Pageable pageable) {
+    public List<BookingDto> getOwnerBookings(long ownerId, String state, Pageable pageable) {
         userService.getUserById(ownerId);
         Page<Booking> ownerBookings;
         try {
@@ -165,13 +165,13 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<Booking> getAllItemBookings(int itemId) {
+    public List<Booking> getAllItemBookings(long itemId) {
         return bookingRepository.findByItem_IdOrderByStartDesc(itemId);
     }
 
     @Override
     public List<Booking> findByItem_IdAndBooker_IdAndStatusAndEndBefore(
-            int itemId, int userId, BookingStatus status, LocalDateTime now) {
+            long itemId, long userId, BookingStatus status, LocalDateTime now) {
         return bookingRepository.findByItem_IdAndBooker_IdAndStatusAndEndBefore(itemId, userId, status, now);
     }
 }

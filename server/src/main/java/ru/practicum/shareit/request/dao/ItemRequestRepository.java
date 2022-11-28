@@ -10,8 +10,8 @@ import ru.practicum.shareit.user.User;
 import java.util.List;
 
 @Repository
-public interface ItemRequestRepository extends PagingAndSortingRepository<ItemRequest, Integer> {
-    List<ItemRequest> findByRequestor_Id(int userId);
+public interface ItemRequestRepository extends PagingAndSortingRepository<ItemRequest, Long> {
+    List<ItemRequest> findByRequestor_Id(long userId);
 
     Page<ItemRequest> findByRequestorNotLike(User user, Pageable pageable);
 }

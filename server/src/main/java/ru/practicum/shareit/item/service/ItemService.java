@@ -10,21 +10,21 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ItemService {
-    Optional<Item> getItemById(int itemId);
+    Optional<Item> getItemById(long itemId);
 
-    List<ItemWithBookingsDto> getAllOwnerItems(int userId, Pageable pageable);
+    List<ItemWithBookingsDto> getAllOwnerItems(long userId, Pageable pageable);
 
     List<ItemDto> search(String text, Pageable pageable);
 
-    ItemDto createItem(int userId, ItemDto itemDto);
+    ItemDto createItem(long userId, ItemDto itemDto);
 
-    ItemDto updateItem(int itemId, int userId, ItemDto itemDto);
+    ItemDto updateItem(long itemId, long userId, ItemDto itemDto);
 
-    ItemWithBookingsDto itemConverter(int userId, Item item);
+    ItemWithBookingsDto itemConverter(long userId, Item item);
 
-    CommentDto createComment(int itemId, int userId, CommentDto commentDto);
+    CommentDto createComment(long itemId, long userId, CommentDto commentDto);
 
-    List<ItemDto> getRequestItems(int requestId);
+    List<ItemDto> getRequestItems(long requestId);
 
-    ItemWithBookingsDto getItemWithBookingsById(int userId, int itemId);
+    ItemWithBookingsDto getItemWithBookingsById(long userId, long itemId);
 }

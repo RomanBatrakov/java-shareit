@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Override
-    public UserDto getUserById(int id) {
+    public UserDto getUserById(long id) {
         try {
             return userMapper.toUserDto(userRepository.findById(id).get());
         } catch (NoSuchElementException e) {
@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto updateUser(int id, UserDto userDto) {
+    public UserDto updateUser(long id, UserDto userDto) {
         try {
             User user = userMapper.toUser(userDto);
             User userFromDb = userRepository.findById(id).get();
@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(int id) {
+    public void deleteUser(long id) {
         try {
             userRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {

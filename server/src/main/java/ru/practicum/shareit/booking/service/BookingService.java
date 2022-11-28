@@ -10,18 +10,18 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface BookingService {
-    BookingDto createBooking(int userId, BookingSimpleDto bookingSimpleDto);
+    BookingDto createBooking(long userId, BookingSimpleDto bookingSimpleDto);
 
-    BookingDto updateBooking(int bookingId, int userId, Boolean approved);
+    BookingDto updateBooking(long bookingId, long userId, Boolean approved);
 
-    BookingDto getBookingById(int userId, int bookingId);
+    BookingDto getBookingById(long userId, long bookingId);
 
-    List<BookingDto> getUserBookings(int userId, String state, Pageable pageable);
+    List<BookingDto> getUserBookings(long userId, String state, Pageable pageable);
 
-    List<BookingDto> getOwnerBookings(int ownerId, String state, Pageable pageable);
+    List<BookingDto> getOwnerBookings(long ownerId, String state, Pageable pageable);
 
-    List<Booking> getAllItemBookings(int itemId);
+    List<Booking> getAllItemBookings(long itemId);
 
     List<Booking> findByItem_IdAndBooker_IdAndStatusAndEndBefore(
-            int itemId, int userId, BookingStatus status, LocalDateTime now);
+            long itemId, long userId, BookingStatus status, LocalDateTime now);
 }

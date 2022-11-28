@@ -19,26 +19,26 @@ public class BookingController {
     private static final String HEADER_USER_ID = "X-Sharer-User-Id";
 
     @PostMapping
-    public ResponseEntity<BookingDto> createBooking(@RequestHeader(HEADER_USER_ID) int userId,
+    public ResponseEntity<BookingDto> createBooking(@RequestHeader(HEADER_USER_ID) long userId,
                                                     @RequestBody BookingSimpleDto bookingSimpleDto) {
         return ResponseEntity.ok(service.createBooking(userId, bookingSimpleDto));
     }
 
     @PatchMapping("/{bookingId}")
-    public ResponseEntity<BookingDto> updateBooking(@PathVariable int bookingId,
+    public ResponseEntity<BookingDto> updateBooking(@PathVariable long bookingId,
                                                     @RequestParam Boolean approved,
-                                                    @RequestHeader(HEADER_USER_ID) int userId) {
+                                                    @RequestHeader(HEADER_USER_ID) long userId) {
         return ResponseEntity.ok(service.updateBooking(bookingId, userId, approved));
     }
 
     @GetMapping("/{bookingId}")
-    public ResponseEntity<BookingDto> getBookingById(@RequestHeader(HEADER_USER_ID) int userId,
-                                                     @PathVariable int bookingId) {
+    public ResponseEntity<BookingDto> getBookingById(@RequestHeader(HEADER_USER_ID) long userId,
+                                                     @PathVariable long bookingId) {
         return ResponseEntity.ok(service.getBookingById(userId, bookingId));
     }
 
     @GetMapping
-    public ResponseEntity<List<BookingDto>> getUserBookings(@RequestHeader(HEADER_USER_ID) int userId,
+    public ResponseEntity<List<BookingDto>> getUserBookings(@RequestHeader(HEADER_USER_ID) long userId,
                                                             @RequestParam(required = false,
                                                                     defaultValue = "ALL") String state,
                                                             @RequestParam(required = false,
@@ -49,7 +49,7 @@ public class BookingController {
     }
 
     @GetMapping("/owner")
-    public ResponseEntity<List<BookingDto>> getOwnerBookings(@RequestHeader(HEADER_USER_ID) int ownerId,
+    public ResponseEntity<List<BookingDto>> getOwnerBookings(@RequestHeader(HEADER_USER_ID) long ownerId,
                                                              @RequestParam(required = false,
                                                                      defaultValue = "ALL") String state,
                                                              @RequestParam(required = false,

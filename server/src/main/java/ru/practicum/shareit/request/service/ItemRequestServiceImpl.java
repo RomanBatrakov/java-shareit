@@ -29,7 +29,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemService itemService;
 
     @Override
-    public List<ItemRequestDto> getAllRequests(int userId) {
+    public List<ItemRequestDto> getAllRequests(long userId) {
         userService.getUserById(userId);
             return itemRequestRepository.findByRequestor_Id(userId).stream()
                     .map(itemRequestMapper::toItemRequestDto)
@@ -38,7 +38,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public ItemRequestDto getRequest(int userId, int requestId) {
+    public ItemRequestDto getRequest(long userId, long requestId) {
         userService.getUserById(userId);
             ItemRequestDto itemRequestDto = itemRequestMapper.toItemRequestDto(findById(requestId));
             itemRequestDto.setItems(itemService.getRequestItems(requestId));
@@ -46,7 +46,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public List<ItemRequestDto> getAllUsersRequests(int userId, Pageable pageable) {
+    public List<ItemRequestDto> getAllUsersRequests(long userId, Pageable pageable) {
         User user = userMapper.toUser(userService.getUserById(userId));
         return itemRequestRepository.findByRequestorNotLike(user, pageable).stream()
                 .map(itemRequestMapper::toItemRequestDto)
@@ -55,7 +55,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public ItemRequestDto createRequest(int userId, ItemRequestDto itemRequestDto) {
+    public ItemRequestDto createRequest(long userId, ItemRequestDto itemRequestDto) {
         ItemRequest itemRequest = itemRequestMapper.toItemRequest(itemRequestDto);
         itemRequest.setCreated(LocalDateTime.now());
         itemRequest.setRequestor(userMapper.toUser(userService.getUserById(userId)));
@@ -64,7 +64,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         return itemRequestDto;
     }
 
-    public ItemRequest findById(int requestId) {
+    public ItemRequest findById(long requestId) {
         try {
             return itemRequestRepository.findById(requestId).get();
         } catch (NoSuchElementException e) {
