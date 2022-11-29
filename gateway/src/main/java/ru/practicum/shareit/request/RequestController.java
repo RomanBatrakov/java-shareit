@@ -48,8 +48,8 @@ public class RequestController {
 
     @PostMapping
     public ResponseEntity<Object> createRequest(@RequestHeader(HEADER_USER_ID) int userId,
-                                                @RequestBody @Valid RequestDto RequestDto) {
-        log.info("Creating request {}, userId={}", RequestDto, userId);
-        return requestClient.createRequest(userId, RequestDto);
+                                                @RequestBody @Valid RequestDto requestDto) {
+        log.info("Creating request {}, userId={}", requestDto, userId);
+        return requestClient.createRequest(userId, requestDto);
     }
 }
