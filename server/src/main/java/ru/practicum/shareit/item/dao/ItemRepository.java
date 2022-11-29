@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface ItemRepository extends PagingAndSortingRepository<Item, Long> {
-    Page<Item> findByOwner_Id(long userId, Pageable pageable);
+    Page<Item> findByOwner_IdOrderById(long userId, Pageable pageable);
 
     Page<Item> findByNameOrDescriptionContainingIgnoreCaseAndAvailableTrue(
             String name, String description, Pageable pageable);

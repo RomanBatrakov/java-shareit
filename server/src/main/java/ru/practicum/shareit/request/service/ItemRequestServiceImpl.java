@@ -31,24 +31,24 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public List<ItemRequestDto> getAllRequests(long userId) {
         userService.getUserById(userId);
-            return itemRequestRepository.findByRequestor_Id(userId).stream()
-                    .map(itemRequestMapper::toItemRequestDto)
-                    .peek(x -> x.setItems(itemService.getRequestItems(x.getId())))
-                    .collect(Collectors.toList());
+        return itemRequestRepository.findByRequestor_Id(userId).stream()
+                .map(itemRequestMapper::toItemRequestDto)
+                .peek(x -> x.setItems(itemService.getRequestItems(x.getId())))
+                .collect(Collectors.toList());
     }
 
     @Override
     public ItemRequestDto getRequest(long userId, long requestId) {
         userService.getUserById(userId);
-            ItemRequestDto itemRequestDto = itemRequestMapper.toItemRequestDto(findById(requestId));
-            itemRequestDto.setItems(itemService.getRequestItems(requestId));
-            return itemRequestDto;
+        ItemRequestDto itemRequestDto = itemRequestMapper.toItemRequestDto(findById(requestId));
+        itemRequestDto.setItems(itemService.getRequestItems(requestId));
+        return itemRequestDto;
     }
 
     @Override
     public List<ItemRequestDto> getAllUsersRequests(long userId, Pageable pageable) {
         User user = userMapper.toUser(userService.getUserById(userId));
-        return itemRequestRepository.findByRequestorNotLike(user, pageable).stream()
+        return itemRequestRepository.findByRequestorIsNot(user, pageable).stream()
                 .map(itemRequestMapper::toItemRequestDto)
                 .peek(x -> x.setItems(itemService.getRequestItems(x.getId())))
                 .collect(Collectors.toList());

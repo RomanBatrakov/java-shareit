@@ -13,5 +13,5 @@ import java.util.List;
 public interface ItemRequestRepository extends PagingAndSortingRepository<ItemRequest, Long> {
     List<ItemRequest> findByRequestor_Id(long userId);
 
-    Page<ItemRequest> findByRequestorNotLike(User user, Pageable pageable);
+    Page<ItemRequest> findByRequestorIsNot(User user, Pageable pageable);
 }
