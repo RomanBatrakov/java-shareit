@@ -18,8 +18,6 @@ import javax.validation.Valid;
 public class UserController {
     private final UserClient userClient;
 
-    private static final String HEADER_USER_ID = "X-Sharer-User-Id";
-
     @GetMapping("/{id}")
     public ResponseEntity<Object> getUserById(@PathVariable long id) {
         log.info("Getting user {}", id);
@@ -40,7 +38,7 @@ public class UserController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<Object> updateUser(@PathVariable long id,
-                                              @RequestBody UserDto userDto) {
+                                             @RequestBody UserDto userDto) {
         log.info("Updating user {}, userId={}", userDto, id);
         return userClient.updateUser(id, userDto);
     }

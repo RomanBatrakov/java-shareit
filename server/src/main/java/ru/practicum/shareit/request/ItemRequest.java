@@ -18,8 +18,6 @@ public class ItemRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @NonNull
-    @NotBlank
     @Column(name = "description")
     private String description;
     @OneToOne

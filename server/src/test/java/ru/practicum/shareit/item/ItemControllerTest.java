@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import static java.lang.Math.toIntExact;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.*;
@@ -136,7 +137,7 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$.name", is(itemDto.getName())))
                 .andExpect(jsonPath("$.available", is(itemDto.getAvailable())))
                 .andExpect(jsonPath("$.owner.name", is(itemDto.getOwner().getName())))
-                .andExpect(jsonPath("$.requestId", is(itemDto.getRequestId())));
+                .andExpect(jsonPath("$.requestId", is(toIntExact(itemDto.getRequestId()))));
     }
 
     @Test
@@ -199,6 +200,6 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$.name", is(itemDto.getName())))
                 .andExpect(jsonPath("$.available", is(itemDto.getAvailable())))
                 .andExpect(jsonPath("$.owner.name", is(itemDto.getOwner().getName())))
-                .andExpect(jsonPath("$.requestId", is(itemDto.getRequestId())));
+                .andExpect(jsonPath("$.requestId", is(toIntExact(itemDto.getRequestId()))));
     }
 }
