@@ -5,8 +5,6 @@ import ru.practicum.shareit.item.dto.ItemDto;
 
 import java.time.LocalDateTime;
 
-import static org.mockito.ArgumentMatchers.anyLong;
-
 public class ItemTestData {
     public static ItemDto itemDto1 = ItemDto.builder()
             .name("item1").description("description1").available(true)
