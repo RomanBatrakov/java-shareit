@@ -20,43 +20,43 @@ public class ItemController {
 
 
     @GetMapping("/{itemId}")
-    public ResponseEntity<ItemWithBookingsDto> getItemWithBookingsById(@RequestHeader(HEADER_USER_ID) long userId,
-                                                                       @PathVariable long itemId) {
+    public ResponseEntity<ItemWithBookingsDto> getItemWithBookingsById(@RequestHeader(HEADER_USER_ID) Long userId,
+                                                                       @PathVariable Long itemId) {
         return ResponseEntity.ok(service.getItemWithBookingsById(userId, itemId));
     }
 
     @GetMapping
-    public ResponseEntity<List<ItemWithBookingsDto>> getAllOwnerItems(@RequestHeader(HEADER_USER_ID) long userId,
+    public ResponseEntity<List<ItemWithBookingsDto>> getAllOwnerItems(@RequestHeader(HEADER_USER_ID) Long userId,
                                                                       @RequestParam(required = false,
-                                                                              defaultValue = "0") int from,
+                                                                              defaultValue = "0") Integer from,
                                                                       @RequestParam(required = false,
-                                                                              defaultValue = "10") int size) {
+                                                                              defaultValue = "10") Integer size) {
         return ResponseEntity.ok(service.getAllOwnerItems(userId, PageRequest.of((from / size), size)));
     }
 
     @GetMapping("/search")
     public ResponseEntity<List<ItemDto>> search(@RequestParam String text,
-                                                @RequestParam(required = false, defaultValue = "0") int from,
-                                                @RequestParam(required = false, defaultValue = "10") int size) {
+                                                @RequestParam(required = false, defaultValue = "0") Integer from,
+                                                @RequestParam(required = false, defaultValue = "10") Integer size) {
         return ResponseEntity.ok(service.search(text, PageRequest.of((from / size), size)));
     }
 
     @PostMapping
-    public ResponseEntity<ItemDto> createItem(@RequestHeader(HEADER_USER_ID) long userId,
+    public ResponseEntity<ItemDto> createItem(@RequestHeader(HEADER_USER_ID) Long userId,
                                               @RequestBody ItemDto itemDto) {
         return ResponseEntity.ok(service.createItem(userId, itemDto));
     }
 
     @PostMapping("/{itemId}/comment")
-    public ResponseEntity<CommentDto> createComment(@PathVariable long itemId,
-                                                    @RequestHeader(HEADER_USER_ID) long userId,
+    public ResponseEntity<CommentDto> createComment(@PathVariable Long itemId,
+                                                    @RequestHeader(HEADER_USER_ID) Long userId,
                                                     @RequestBody CommentDto commentDto) {
         return ResponseEntity.ok(service.createComment(itemId, userId, commentDto));
     }
 
     @PatchMapping("/{itemId}")
-    public ResponseEntity<ItemDto> updateItem(@PathVariable long itemId,
-                                              @RequestHeader(HEADER_USER_ID) long userId,
+    public ResponseEntity<ItemDto> updateItem(@PathVariable Long itemId,
+                                              @RequestHeader(HEADER_USER_ID) Long userId,
                                               @RequestBody ItemDto itemDto) {
         return ResponseEntity.ok(service.updateItem(itemId, userId, itemDto));
     }

@@ -26,18 +26,18 @@ public class ItemController {
     private static final String HEADER_USER_ID = "X-Sharer-User-Id";
 
     @GetMapping("/{itemId}")
-    public ResponseEntity<Object> getItemWithBookingsById(@RequestHeader(HEADER_USER_ID) long userId,
-                                                          @PathVariable long itemId) {
+    public ResponseEntity<Object> getItemWithBookingsById(@RequestHeader(HEADER_USER_ID) Long userId,
+                                                          @PathVariable Long itemId) {
         log.info("Getting item {}, userId={}", itemId, userId);
         return itemClient.getItemWithBookingsById(userId, itemId);
     }
 
     @GetMapping
-    public ResponseEntity<Object> getAllOwnerItems(@RequestHeader(HEADER_USER_ID) long userId,
+    public ResponseEntity<Object> getAllOwnerItems(@RequestHeader(HEADER_USER_ID) Long userId,
                                                    @RequestParam(name = "from", required = false,
-                                                           defaultValue = "0") @PositiveOrZero int from,
+                                                           defaultValue = "0") @PositiveOrZero Integer from,
                                                    @RequestParam(name = "size", required = false,
-                                                           defaultValue = "10") @Positive @Max(100) int size) {
+                                                           defaultValue = "10") @Positive @Max(100) Integer size) {
         log.info("Getting all owner items userId={}, from={}, size={}", userId, from, size);
         return itemClient.getAllOwnerItems(userId, from, size);
     }
@@ -45,31 +45,31 @@ public class ItemController {
     @GetMapping("/search")
     public ResponseEntity<Object> search(@RequestParam String text,
                                          @RequestParam(name = "from", required = false,
-                                                 defaultValue = "0") @PositiveOrZero int from,
+                                                 defaultValue = "0") @PositiveOrZero Integer from,
                                          @RequestParam(name = "size", required = false,
-                                                 defaultValue = "10") @Positive @Max(100) int size) {
+                                                 defaultValue = "10") @Positive @Max(100) Integer size) {
         log.info("Searching text={}, from={}, size={}", text, from, size);
         return itemClient.search(text, from, size);
     }
 
     @PostMapping
-    public ResponseEntity<Object> createItem(@RequestHeader(HEADER_USER_ID) long userId,
+    public ResponseEntity<Object> createItem(@RequestHeader(HEADER_USER_ID) Long userId,
                                              @RequestBody @Valid ItemDto itemDto) {
         log.info("Creating item {}, userId={}", itemDto, userId);
         return itemClient.createItem(userId, itemDto);
     }
 
     @PatchMapping("/{itemId}")
-    public ResponseEntity<Object> updateItem(@RequestHeader(HEADER_USER_ID) long userId,
-                                             @PathVariable long itemId,
+    public ResponseEntity<Object> updateItem(@RequestHeader(HEADER_USER_ID) Long userId,
+                                             @PathVariable Long itemId,
                                              @RequestBody ItemDto itemDto) {
         log.info("Updating item {}, itemId={}, userId={}", itemDto, itemId, userId);
         return itemClient.updateItem(userId, itemId, itemDto);
     }
 
     @PostMapping("/{itemId}/comment")
-    public ResponseEntity<Object> createComment(@RequestHeader(HEADER_USER_ID) long userId,
-                                                @PathVariable long itemId,
+    public ResponseEntity<Object> createComment(@RequestHeader(HEADER_USER_ID) Long userId,
+                                                @PathVariable Long itemId,
                                                 @RequestBody @Valid CommentDto commentDto) {
         log.info("Creating comment {}, userId={}, itemId={}", commentDto, userId, itemId);
         return itemClient.createComment(userId, itemId, commentDto);

@@ -24,30 +24,30 @@ public class RequestController {
     private static final String HEADER_USER_ID = "X-Sharer-User-Id";
 
     @GetMapping
-    public ResponseEntity<Object> getAllRequests(@RequestHeader(HEADER_USER_ID) long userId) {
+    public ResponseEntity<Object> getAllRequests(@RequestHeader(HEADER_USER_ID) Long userId) {
         log.info("Getting all requests: userId={}", userId);
         return requestClient.getAllRequests(userId);
     }
 
     @GetMapping("/{requestId}")
-    public ResponseEntity<Object> getRequest(@RequestHeader(HEADER_USER_ID) long userId,
-                                             @PathVariable long requestId) {
+    public ResponseEntity<Object> getRequest(@RequestHeader(HEADER_USER_ID) Long userId,
+                                             @PathVariable Long requestId) {
         log.info("Getting request {}, userId={}", requestId, userId);
         return requestClient.getRequest(userId, requestId);
     }
 
     @GetMapping("/all")
-    public ResponseEntity<Object> getAllUsersRequests(@RequestHeader(HEADER_USER_ID) long userId,
+    public ResponseEntity<Object> getAllUsersRequests(@RequestHeader(HEADER_USER_ID) Long userId,
                                                       @RequestParam(name = "from", required = false,
-                                                              defaultValue = "0") @PositiveOrZero int from,
+                                                              defaultValue = "0") @PositiveOrZero Integer from,
                                                       @RequestParam(name = "size", required = false,
-                                                              defaultValue = "10") @Positive @Max(100) int size) {
+                                                              defaultValue = "10") @Positive @Max(100) Integer size) {
         log.info("Getting all user requests: userId={}", userId);
         return requestClient.getAllUsersRequests(userId, from, size);
     }
 
     @PostMapping
-    public ResponseEntity<Object> createRequest(@RequestHeader(HEADER_USER_ID) int userId,
+    public ResponseEntity<Object> createRequest(@RequestHeader(HEADER_USER_ID) Long userId,
                                                 @RequestBody @Valid RequestDto requestDto) {
         log.info("Creating request {}, userId={}", requestDto, userId);
         return requestClient.createRequest(userId, requestDto);
